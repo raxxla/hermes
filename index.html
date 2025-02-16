@@ -296,11 +296,10 @@
                 } else {
                     if (saved) {
                         if (typeof DemoApp.cloudStorageItems[key] === 'undefined') {
-                            DemoApp.showAlert('! ' + key + ': ' + err);
                             DemoApp.cloudStorageKeys.push(key);
                         }
                         DemoApp.cloudStorageItems[key] = value;
-                        DemoApp.showAlert(key + ': ' + err);
+                        DemoApp.showAlert(key + ': ' + value);
                     }
                     form.reset();
                     DemoApp.updateCloudRows();
@@ -319,6 +318,7 @@
 
             document.getElementById('cloud_rows').innerHTML = html
         },
+        
         loadCloudKeys(el) {
             Telegram.WebApp.CloudStorage.getKeys(function(err, keys) {
                 if (err) {
