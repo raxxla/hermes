@@ -122,6 +122,7 @@
             </form>
         
             <pre><code id="webview_data"></code></pre>
+
             <div class="hint">
                 Data passed to webview.
                 <span id="webview_data_status" class="status_need">Checking hash...</span>,
@@ -283,25 +284,30 @@
                 }
             });
         },
+
         saveCloudForm(form, event) {
             event.preventDefault();
             const key = form.key.value
             const value = form.value.value
+
             Telegram.WebApp.CloudStorage.setItem(key, value, function(err, saved) {
                 if (err) {
                     DemoApp.showAlert('Error: ' + err);
                 } else {
                     if (saved) {
                         if (typeof DemoApp.cloudStorageItems[key] === 'undefined') {
+                            DemoApp.showAlert('! ' + key + ': ' + err);
                             DemoApp.cloudStorageKeys.push(key);
                         }
                         DemoApp.cloudStorageItems[key] = value;
+                        DemoApp.showAlert(key + ': ' + err);
                     }
                     form.reset();
                     DemoApp.updateCloudRows();
                 }
             });
         },
+
         updateCloudRows() {
             let html = '';
             const keys = DemoApp.cloudStorageKeys;
@@ -338,6 +344,15 @@
         },
 
     }
+
+    function cleanHTML(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/\n/g, '<br/>')
+    }
         </script>
 
     <script type="application/javascript">
@@ -346,9 +361,9 @@
      * This part of code is used to initialize the demo app and set up the event handlers we need.
      */
 
-     Telegram.WebApp.onEvent('themeChanged', function () {
-        document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
-    });
+     //Telegram.WebApp.onEvent('themeChanged', function () {
+     //   document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
+    //});
 
     if (DemoApp.initDataUnsafe.query_id) {
         document.getElementById('main_btn').style.display = 'block';
@@ -362,6 +377,7 @@
     if (DemoApp.initDataUnsafe.receiver) {
         document.getElementById('peer_wrap').style.display = 'block';
         document.getElementById('peer_name').innerHTML     = DemoApp.initDataUnsafe.receiver.first_name + ' ' + DemoApp.initDataUnsafe.receiver.last_name;
+
         if (DemoApp.initDataUnsafe.receiver.photo_url) {
             document.getElementById('peer_photo').setAttribute('src', DemoApp.initDataUnsafe.receiver.photo_url);
         } else {
