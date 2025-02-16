@@ -354,7 +354,7 @@
         document.getElementById('main_btn').style.display = 'block';
     }
     document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
-    document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
+    document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe.user.username, null, 2);
 
     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
     document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
@@ -379,6 +379,10 @@
 
     DemoApp.checkInitData();
     DemoApp.init();
+
+    try {
+        DemoApp.loadCloudKeys();
+    } catch(e) {}
 
     </script>
 
