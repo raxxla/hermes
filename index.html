@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="MobileOptimized" content="176" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="robots" content="noindex,nofollow" />
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <title></title>
+
+        <style>
+
+        .dark pre {
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .chat_img {
+            width: 30px;
+            border-radius: 15px;
+            margin-right: 10px;
+        }
+
+        .columns {
+            display: flex;
+        }
+
+        .columns > * {
+            flex-grow: 1;
+        }
+        .hint {
+            font-size: .8em;
+            color: var(--tg-theme-hint-color, #a8a8a8);
+        }
+        .ok {
+            color: green;
+        }
+
+        .err {
+            color: red;
+        }
+
+        .status_need {
+            display: none;
+        }
+        small {
+            font-size: 12px;
+        }
+        .small {
+            font-size: 12px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table td {
+            padding: 2px;
+        }
+        .table-bordered {
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+            padding: 4px;
+        }
+        .table.small button {
+            padding: 3px 6px;
+            font-size: 12px;
+            margin: 4px 0;
+        }
+        .table.small input {
+            padding: 3px 6px;
+            font-size: 12px;
+            margin: 4px 0;
+        }
+        </style>
+    </head>
+
+    <body>
+
+        <section id="top_sect">
+            <button id="main_btn" onclick="DemoApp.sendMessage('');">Send «Hello, World!»</button>
+            <button id="with_webview_btn" onclick="DemoApp.sendMessage('', true);">Send «Hello, World!» with inline webview button</button>
+            <button onclick="DemoApp.expand();">Expand Webview</button>
+
+            <div id="peer_wrap" style="display:none">
+                <img id="peer_photo" class="chat_img" src="">
+                <span id="peer_name"></span>
+            </div>
+        
+        </section>
+
+        <section>
+
+            <div id="btn_status" class="hint" style="display: none;"></div>
+
+            <p>Cloud storage:</p>
+            <form onsubmit="DemoApp.saveCloudForm(this, event);">
+                <table class="table table-bordered small">
+                    <thead>
+                    <tr>
+                        <th width="20%">Key</th>
+                        <th width="70%">Value</th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="cloud_rows"></tbody>
+                    <tfoot>
+                    <tr>
+                        <td><input type="text" name="key" /></td>
+                        <td><input type="text" name="value" /></td>
+                        <td>
+                            <button type="submit">Save</button>
+                            <button type="reset">Clear</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </form>
+        
+            <pre><code id="webview_data"></code></pre>
+            <div class="hint">
+                Data passed to webview.
+                <span id="webview_data_status" class="status_need">Checking hash...</span>,
+                <span id="webview_data_sign_status">checking signature...</span>
+            </div>
+            <pre><code id="theme_data"></code></pre>
+            <div class="hint">
+                Theme params
+            </div>
+            <div class="hint">
+                Version: <span id="ver"></span>,
+                platform: <span id="platform"></span>
+            </div>
+        
+        </section>        
+
+        <script type="application/javascript">
+
+    const DemoApp = {
+        initData      : Telegram.WebApp.initData || '',
+        initDataUnsafe: Telegram.WebApp.initDataUnsafe || {},
+        MainButton: Telegram.WebApp.MainButton,
+        SecondaryButton: Telegram.WebApp.SecondaryButton,
+        BackButton: Telegram.WebApp.BackButton,
+        SettingsButton: Telegram.WebApp.SettingsButton,
+
+        init: function(options) {
+            document.body.style.visibility = '';
+            Telegram.WebApp.ready();
+
+            Telegram.WebApp.MainButton.setParams({
+                text: 'Close Webview',
+                has_shine_effect: true,
+                is_visible: true
+            }).onClick(DemoApp.close);
+
+            Telegram.WebApp.SecondaryButton.setParams({
+                text: 'Do Something',
+                is_visible: true
+            }).onClick(DemoApp.moveSecondaryButton);
+
+            Telegram.WebApp.BackButton.onClick(function() {
+                DemoApp.showAlert('Back button pressed');
+            });
+
+            Telegram.WebApp.SettingsButton.onClick(function() {
+                DemoApp.showAlert('Settings opened!');
+            });
+        },
+
+        expand() {
+            Telegram.WebApp.expand();
+        },
+        close() {
+            Telegram.WebApp.close();
+        },
+
+        // actions
+        sendMessage(msg_id, with_webview) {
+            if (!DemoApp.initDataUnsafe.query_id) {
+                alert('WebViewQueryId not defined');
+                return;
+            }
+
+            document.querySelectorAll('button').forEach((btn) => btn.disabled = true);
+
+            const btn       = document.querySelector('#btn_status');
+            btn.textContent = 'Sending...';
+
+            DemoApp.apiRequest('sendMessage', {
+                msg_id      : msg_id || '',
+                with_webview: !DemoApp.initDataUnsafe.receiver && with_webview ? 1 : 0
+            }, function (result) {
+                document.querySelectorAll('button').forEach((btn) => btn.disabled = false);
+
+                if (result.response) {
+                    if (result.response.ok) {
+                        btn.textContent   = 'Message sent successfully!';
+                        btn.className     = 'ok';
+                        btn.style.display = 'block';
+                    } else {
+                        btn.textContent   = result.response.description;
+                        btn.className     = 'err';
+                        btn.style.display = 'block';
+                        alert(result.response.description);
+                    }
+                } else if (result.error) {
+                    btn.textContent   = result.error;
+                    btn.className     = 'err';
+                    btn.style.display = 'block';
+                    alert(result.error);
+                } else {
+                    btn.textContent   = 'Unknown error';
+                    btn.className     = 'err';
+                    btn.style.display = 'block';
+                    alert('Unknown error');
+                }
+            });
+        },
+
+        sendText(spam) {
+            const textField = document.querySelector('#text_field');
+            const text      = textField.value;
+            if (!text.length) {
+                return textField.focus();
+            }
+            if (byteLength(text) > 4096) {
+                return alert('Text is too long');
+            }
+
+            const repeat = spam ? 10 : 1;
+            for (let i = 0; i < repeat; i++) {
+                Telegram.WebApp.sendData(text);
+            }
+        },
+        sendTime(spam) {
+            const repeat = spam ? 10 : 1;
+            for (let i = 0; i < repeat; i++) {
+                Telegram.WebApp.sendData(new Date().toString());
+            }
+        },
+
+                // Alerts
+        showAlert(message) {
+            Telegram.WebApp.showAlert(message);
+        },
+        showConfirm(message) {
+            Telegram.WebApp.showConfirm(message);
+        },
+
+        // cloud storage
+        cloudStorageKeys: {},
+        cloudStorageItems: {},
+
+        editCloudRow(el, event) {
+            event.preventDefault();
+            const values = DemoApp.cloudStorageItems
+            const key = el.closest('tr').getAttribute('data-key')
+            el.form.reset();
+            el.form.key.value = key;
+            el.form.value.value = values[key];
+        },
+        deleteCloudRow(el, event) {
+            event.preventDefault();
+            const key = el.closest('tr').getAttribute('data-key')
+            Telegram.WebApp.CloudStorage.removeItem(key, function(err, deleted) {
+                if (err) {
+                    DemoApp.showAlert('Error: ' + err);
+                } else {
+                    if (deleted) {
+                        const index = DemoApp.cloudStorageKeys.indexOf(key);
+                        if (index >= 0) {
+                            DemoApp.cloudStorageKeys.splice(index, 1);
+                        }
+                        delete DemoApp.cloudStorageItems[key];
+                    }
+                    el.form.reset();
+                    DemoApp.updateCloudRows();
+                }
+            });
+        },
+        saveCloudForm(form, event) {
+            event.preventDefault();
+            const key = form.key.value
+            const value = form.value.value
+            Telegram.WebApp.CloudStorage.setItem(key, value, function(err, saved) {
+                if (err) {
+                    DemoApp.showAlert('Error: ' + err);
+                } else {
+                    if (saved) {
+                        if (typeof DemoApp.cloudStorageItems[key] === 'undefined') {
+                            DemoApp.cloudStorageKeys.push(key);
+                        }
+                        DemoApp.cloudStorageItems[key] = value;
+                    }
+                    form.reset();
+                    DemoApp.updateCloudRows();
+                }
+            });
+        },
+        updateCloudRows() {
+            let html = '';
+            const keys = DemoApp.cloudStorageKeys;
+            const values = DemoApp.cloudStorageItems;
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                html += '<tr data-key="'+cleanHTML(key)+'"><td>'+cleanHTML(key)+'</td><td>'+cleanHTML(values[key])+'</td><td><button onclick="DemoApp.editCloudRow(this, event);">Edit</button><button onclick="DemoApp.deleteCloudRow(this, event);">Delete</button></td></tr>';
+            }
+
+            document.getElementById('cloud_rows').innerHTML = html
+        },
+        loadCloudKeys(el) {
+            Telegram.WebApp.CloudStorage.getKeys(function(err, keys) {
+                if (err) {
+                    DemoApp.showAlert('Error: ' + err);
+                } else {
+                    if (keys.length > 0) {
+                        Telegram.WebApp.CloudStorage.getItems(keys, function(err, values) {
+                            if (err) {
+                                DemoApp.showAlert('Error: ' + err);
+                            } else {
+                                DemoApp.cloudStorageKeys = keys;
+                                DemoApp.cloudStorageItems = {};
+                                for (let i = 0; i < keys.length; i++) {
+                                    const key = keys[i];
+                                    DemoApp.cloudStorageItems[key] = values[key];
+                                }
+                                DemoApp.updateCloudRows();
+                            }
+                        });
+                    }
+                }
+            });
+        },
+
+    }
+        </script>
+
+    <script type="application/javascript">
+
+    /*
+     * This part of code is used to initialize the demo app and set up the event handlers we need.
+     */
+
+     Telegram.WebApp.onEvent('themeChanged', function () {
+        document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
+    });
+
+    if (DemoApp.initDataUnsafe.query_id) {
+        document.getElementById('main_btn').style.display = 'block';
+    }
+    document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
+    document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
+
+    document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
+    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
+
+    if (DemoApp.initDataUnsafe.receiver) {
+        document.getElementById('peer_wrap').style.display = 'block';
+        document.getElementById('peer_name').innerHTML     = DemoApp.initDataUnsafe.receiver.first_name + ' ' + DemoApp.initDataUnsafe.receiver.last_name;
+        if (DemoApp.initDataUnsafe.receiver.photo_url) {
+            document.getElementById('peer_photo').setAttribute('src', DemoApp.initDataUnsafe.receiver.photo_url);
+        } else {
+            document.getElementById('peer_photo').style.display = 'none';
+        }
+    } else if (DemoApp.initDataUnsafe.chat) {
+        document.getElementById('peer_wrap').style.display = 'block';
+        document.getElementById('peer_name').innerHTML     = DemoApp.initDataUnsafe.chat.title;
+        if (DemoApp.initDataUnsafe.chat.photo_url) {
+            document.getElementById('peer_photo').setAttribute('src', DemoApp.initDataUnsafe.chat.photo_url);
+        } else {
+            document.getElementById('peer_photo').style.display = 'none';
+        }
+    }
+
+    DemoApp.checkInitData();
+    DemoApp.init();
+
+    </script>
+
+    </body>
+</html>
