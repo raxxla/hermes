@@ -227,6 +227,7 @@
 
         checkInitData() {
             const webViewStatus = document.querySelector('#webview_data_status');
+
             if (DemoApp.initDataUnsafe.query_id &&
                 DemoApp.initData &&
                 webViewStatus.classList.contains('status_need')
@@ -391,8 +392,8 @@
         document.getElementById('main_btn').style.display = 'block';
     }
 
-    document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
-    document.getElementById('webview_data').innerHTML         = DemoApp.initDataUnsafe.user.username;
+    //document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
+    //document.getElementById('webview_data').innerHTML         = DemoApp.initDataUnsafe.user.username;
 
     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
     document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
@@ -416,15 +417,15 @@
         }
     }
 
-    DemoApp.checkInitData();
+    //DemoApp.checkInitData();
     DemoApp.init();
 
-    try {
-        DemoApp.loadCloudKeys();
-    } catch(e) 
-    {
-        DemoApp.showAlert(e);
-    }
+//    try {
+//        DemoApp.loadCloudKeys();
+//    } catch(e) 
+//    {
+//        DemoApp.showAlert(e);
+//    }
 
     function clock() {
   const now = new Date();
