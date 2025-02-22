@@ -83,8 +83,7 @@
 
         <section id="top_sect">
             <button id="main_btn" onclick="DemoApp.sendMessage('');">Send «Hello, World!»</button>
-            <button id="with_webview_btn" onclick="DemoApp.sendMessage('', true);">Send «Hello, World!» with inline webview button</button>
-            <button onclick="DemoApp.expand();">Expand Webview</button>
+            <button id="with_webview_btn" onclick="DemoApp.sendMessage('', true);">Send «Hello, World!» with inline webview button</button></section>
 
             <canvas id="canvas" width="150" height="150">The current time</canvas>
 
@@ -124,6 +123,7 @@
             </form>
         
             <pre><code id="webview_data"></code></pre>
+            <pre><code id="webview_data2"></code></pre>
 
             <div class="hint">
                 Data passed to webview.
@@ -417,7 +417,8 @@
     }
 
     //document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
-    document.getElementById('webview_data').innerHTML         = DemoApp.initDataUnsafe;
+    document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
+    document.getElementById('webview_data2').innerHTML         = DemoApp.initData;
 
     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
     document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
