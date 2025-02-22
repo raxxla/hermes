@@ -429,8 +429,16 @@
 
     userData2.user = JSON.parse(userData2.user);
 
-    if(userData2.user.username == 'raxxla00')
-        document.getElementById('top_sect2').style.visibility = '';
+    var el2 = document.getElementById('top_sect2');
+
+    if(userData2.user.username == 'raxxla00') {
+
+        el2.style.visibility = '';
+        el2.className   = 'ok';
+    }
+    else {
+        el2.className   = 'err';
+    }
 
     //document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
     //document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
