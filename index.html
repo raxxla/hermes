@@ -124,7 +124,6 @@
         
             <pre><code id="webview_data"></code></pre>
             <pre><code id="webview_data2"></code></pre>
-            <pre><code id="webview_data3"></code></pre>
 
             <div class="hint">
                 Data passed to webview.
@@ -417,10 +416,13 @@
         document.getElementById('main_btn').style.display = 'block';
     }
 
+    const params2 = new URLSearchParams(Telegram.WebApp.initData);
+
+    const userData2 = Object.fromEntries(params2);
+
     //document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
     document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
-    document.getElementById('webview_data2').innerHTML         = DemoApp.initData;
-    document.getElementById('webview_data3').innerHTML         = JSON.stringify(window.Telegram.WebApp.WebAppUser, null, 2);
+    document.getElementById('webview_data2').innerHTML         = JSON.stringify(userData2, null, 2);
     //var WebApp = window.Telegram.WebApp;
 
     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
