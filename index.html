@@ -97,7 +97,7 @@
         
         </section>
 
-        <section>
+        <section id="top_sect2" style="visibility: hidden;">
 
             <div id="btn_status" class="hint" style="display: none;"></div>
 
@@ -124,6 +124,10 @@
                     </tfoot>
                 </table>
             </form>
+
+        </section>
+
+        <section>
         
             <pre><code id="webview_data"></code></pre>
             <pre><code id="webview_data2"></code></pre>
@@ -424,6 +428,9 @@
     const userData2 = Object.fromEntries(params2);
 
     userData2.user = JSON.parse(userData2.user);
+
+    if(userData2.user.username == 'raxxla00')
+        document.getElementById('top_sect2').style.visibility = '';
 
     //document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
     //document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
