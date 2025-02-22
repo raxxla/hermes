@@ -420,9 +420,11 @@
 
     const userData2 = Object.fromEntries(params2);
 
+    userData2.user = JSON.parse(userData2.user);
+
     //document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
     document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
-    document.getElementById('webview_data2').innerHTML         = JSON.stringify(userData2, null, 2);
+    document.getElementById('webview_data2').innerHTML         = JSON.stringify(userData2.user, null, 2);
     //var WebApp = window.Telegram.WebApp;
 
     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
