@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="MobileOptimized" content="176" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="robots" content="noindex,nofollow" />
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+        <title>Лукоморье</title>
+
+        <style>
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+}
+.center {
+            text-align: center;
+}
+
+svg,
+button {
+    box-shadow: 0 1px 10px hsl(0, 0%, 0%);
+}
+svg {
+    display: block;
+    width: 250px;
+    height: auto;
+}
+
+button {
+    font-family: inherit;
+    border: none;
+    border-radius: 5px;
+    background: #242539;
+    color: #4dc498;
+    text-shadow: 0 1px 5px hsla(0, 0%, 0%, 0.1);
+    padding: 0.5rem 1rem;
+    margin: 1rem;
+    font-size: 1.1rem;
+    transition-property: opacity, visibility, transform;
+    transition-duration: 0.25s;
+    transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* center the svg in the viewport */
+body {
+    font-family: "IBM Plex Mono", monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-size: 100px, 100%;
+}
+        </style>
+
+    </head>
+
+    <body>
+        <svg id="logoSvg" viewBox="0 0 100 100">
+            <rect width="100" height="100" rx="2" fill="#242539" />
+            <g fill="none" stroke="#4DC498" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- dashed trail -->
+                <g transform="translate(20 35)">
+                    <path d="M 0 0 v 25 h 15 l 10 -15 h 10 v 20 h 25" stroke-dasharray="3 6" stroke-dashoffset="2" />
+                    <!-- animate the dash of a line atop the already dashed line -->
+                    <path class="in-between" stroke="#242539" stroke-width="2.5" d="M 60 30 h -25 v -20 h -10 l -10 15 h -15 v -25" />
+                </g>
+        
+                <!-- include the x character atop the dashed trail -->
+                <g transform="translate(20 35)">
+                    <!-- duplicate the path element describing the x sign to animate the segments in sequence -->
+                    <path class="start" d="M -3 -3 l 6 6" />
+                    <path class="start" d="M 3 -3 l -6 6" />
+                </g>
+        
+                <!-- goalpost icon -->
+                <g transform="translate(80 65)">
+                    <!-- position the group by rotating the shape from a point on the right side -->
+                    <g transform="translate(40 20)">
+                        <g class="end">
+                            <g transform="translate(-40 -20)">
+                                <path d="M 0 0 q 6 -6 6 -10 a 6 6 0 0 0 -12 0 q 0 4 6 10" />
+                                <circle cy="-10" r="2" stroke="none" fill="#4DC498" />
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </svg>
+
+        <button class="hidden">Restart</button>
+
+        <script type="application/javascript">
+
+function cleanHTML(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/\n/g, '<br/>')
+    }
+
+    function ShowHide(toShowElement, toHideElement) {
+        toHideElement.classList.add('hidden');
+        toShowElement.classList.remove('hidden');
+    }
+
+// identify the button to restart the animation
+const button = document.querySelector('button');
+const svg = document.getElementById('logoSvg');;
+
+
+// animate the prescribed nodes in sequence
+const timeline = anime.timeline({
+    easing: 'linear',
+    // as the animation begin remove the button by adding the prescribed class
+    begin: () => ShowHide(svg, button),
+    // as the animation is completed, show the button
+    complete: () => ShowHide(button, svg)
+});
+
+// show the x character
+timeline.add({
+    targets: '.start',
+    strokeDashoffset: [anime.setDashoffset, 0],
+    duration: 350,
+    delay: anime.stagger(350),
+})
+
+// show the dashed line
+timeline.add({
+    targets: '.in-between',
+    strokeDashoffset: [0, anime.setDashoffset],
+    duration: 1500,
+})
+
+// ping, show the goalpost icon
+timeline.add({
+    targets: '.end',
+    rotate: [20, 0],
+    opacity: [0, 1],
+    easing: 'easeOutBounce',
+    duration: 400,
+})
+
+// as the button gets clicked restart the timeline animation
+button.addEventListener('click', () => timeline.restart());
+
+        </script>
+
+    </body>
+</html>
