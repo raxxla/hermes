@@ -78,6 +78,11 @@
             return Math.Round(-price * lots / getShortKoeff(fut) * 100) / 100;
     }
 
+    function getCookie(name) {
+	    var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+	    return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
     function getFuture(futObj) {
         return {
             uid: futObj.uid,
@@ -369,6 +374,9 @@
             }
         }
         else {
+
+            // Куки сроком на год:
+            document.cookie = "name=user;max-age=2629743";
 
             var tableEl = document.getElementById('opsTable');
             var sectEl = document.getElementById('top_sect');
