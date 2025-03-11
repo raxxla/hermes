@@ -340,6 +340,9 @@
 
     <script type="application/javascript">
 
+        var tableEl = document.getElementById('opsTable');
+
+
         function runBot(tint) {
 
         }
@@ -374,6 +377,7 @@
             }
             else {
                 sect_bot.classList.remove('hidden');
+                tableEl.classList.add('hidden');
             }
         }
         else {
@@ -381,7 +385,6 @@
             // Куки сроком на год:
             document.cookie = "name=user;max-age=2629743";
 
-            var tableEl = document.getElementById('opsTable');
             var sectEl = document.getElementById('top_sect');
 
             tableEl.classList.add('hidden');
