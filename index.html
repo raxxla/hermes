@@ -9,6 +9,12 @@
         <meta name="HandheldFriendly" content="True" />
         <meta name="robots" content="noindex,nofollow" />
         <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+        <script src="https://cdn.jsdelivr.net/combine/npm/webtorrent/webtorrent.min.js"></script>
+        
+        <script type="application/javascript">
+
+        </script>
+
         <title></title>
 
         <style>
@@ -338,6 +344,7 @@
             let html = '';
             const keys = DemoApp.cloudStorageKeys;
             const values = DemoApp.cloudStorageItems;
+
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
                 html += '<tr data-key="'+cleanHTML(key)+'"><td>'+cleanHTML(key)+'</td><td>'+cleanHTML(values[key])+'</td><td><button onclick="DemoApp.editCloudRow(this, event);">Edit</button><button onclick="DemoApp.deleteCloudRow(this, event);">Delete</button></td></tr>';
@@ -358,6 +365,7 @@
                             } else {
                                 DemoApp.cloudStorageKeys = keys;
                                 DemoApp.cloudStorageItems = {};
+
                                 for (let i = 0; i < keys.length; i++) {
                                     const key = keys[i];
                                     DemoApp.cloudStorageItems[key] = values[key];

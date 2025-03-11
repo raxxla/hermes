@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/combine/npm/webtorrent/webtorrent.min.js"></script>
+
+    <script type="application/javascript">
+
+    const Multiplier = 1000000000.0;
+    const depositOperationTypes = ['OPERATION_TYPE_INPUT', 'OPERATION_TYPE_TAX', 'OPERATION_TYPE_OUTPUT', 'OPERATION_TYPE_TAX_CORRECTION', 'OPERATION_TYPE_SERVICE_FEE', 'OPERATION_TYPE_BENEFIT_TAX', 'OPERATION_TYPE_OUTPUT_ACQUIRING', 'OPERATION_TYPE_INPUT_ACQUIRING', 'OPERATION_TYPE_OUT_MULTI', 'OPERATION_TYPE_INP_MULTI'];
+    const emptyArg = {};
+    const futStatusArg = { instrumentStatus: 'INSTRUMENT_STATUS_UNSPECIFIED' };
+
+    const baseUrl = 'https://invest-public-api.tinkoff.ru/rest';
+    const usersUrl = baseUrl + '/tinkoff.public.invest.api.contract.v1.UsersService';
+    const operationsUrl = baseUrl + '/tinkoff.public.invest.api.contract.v1.OperationsService';
+    const instrumentsUrl = baseUrl + '/tinkoff.public.invest.api.contract.v1.InstrumentsService';
+
+    const accUrl = usersUrl + '/GetAccounts';
+    const pfUrl = operationsUrl + '/GetPortfolio';
+    const wdLimitsUrl = operationsUrl + '/GetWithdrawLimits';
+    const opsUrl = operationsUrl + '/GetOperationsByCursor';
+    const futsUrl = instrumentsUrl + '/Futures';
+
+    var futArray = [];
+    var futIdMap = {};
+    var futTickerMap = {};
+        // cloud storage
+    var cloudStorageKeys = {};
+    var cloudStorageItems = {};
+
+    function cleanHTML(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/\n/g, '<br/>')
+    }
+
+
+    async function sleep(msec) {
+        return new Promise(resolve => setTimeout(resolve, msec));
+    }
+
+    function getNanoValue(value) {
+        const units = +value.units;
+        const fracPart = value.nano / Multiplier;
+
+        return units + fracPart;
+    }
+
+    function getShortKoeff(fut) {
+        const shortK = fut.kshort.Units == '1' ? getNanoValue( fut.dshortMin) : getNanoValue( fut.dshort );
+
+        return Math.round( 1 / shortK );
+    }
+
+    function getLongKoeff(fut) {
+        const longK = fut.klong.Units == '1' ? getNanoValue( fut.dlongMin) : getNanoValue( fut.dlong );
+
+        return Math.round( 1 / longK );
+    }
+
+    function getMargin(fut, price, lots) {
+
+        if(lots > 0)
+            return Math.Round(price * lots / getLongKoeff(fut) * 100) / 100;
+        else
+            return Math.Round(-price * lots / getShortKoeff(fut) * 100) / 100;
+    }
+
+    function getFuture(futObj) {
+        return {
+            uid: futObj.uid,
+            ticker: futObj.ticker,
+            name: futObj.name,
+            lot: futObj.lot,
+            priceStep: getNanoValue( futObj.minPriceIncrement ),
+            priceStepAmount: getNanoValue( futObj.minPriceIncrementAmount ),
+            buyMargin: getNanoValue( futObj.initialMarginOnBuy ),
+            sellMargin: getNanoValue( futObj.initialMarginOnSell ),
+            basicAsset: futObj.basicAsset,
+            basicAssetSize: getNanoValue( futObj.basicAssetSize ),
+            expirationDate: Date.parse(futObj.expirationDate)
+        };
+    }
+
+    function setFutures(futures) {
+        const arr = Array.from(futures);
+
+        var index = 0;
+
+        for (var i=0; i < arr.length; i++) {
+
+            const fut = arr[i];
+
+            if(!fut.sellAvailableFlag || !fut.buyAvailableFlag || fut.forQualInvestorFlag || !fut.apiTradeAvailableFlag)
+                continue;
+
+            if(fut.currency != "rub")
+                continue;
+
+            const myFut = getFuture( fut );
+
+            futArray[index++] = myFut;
+            futIdMap[myFut.uid] = myFut;
+            futTickerMap[myFut.ticker] = myFut;
+        }
+
+        //const kzz5 = futTickerMap["KZZ5"];
+
+        return `${index} futures`;
+    }
+
+    function setDepositOperations(opItems) {
+
+        var total = 0;
+
+        for(var i=0; i < opItems.length; i++) {
+            total += getNanoValue( opItems[i].payment );
+            total += getNanoValue( opItems[i].commission );
+        }
+
+        console.log(`Депозит ${Math.round( total)} руб`);
+        //console.log(`Баланс ${wdLimits.money} руб`);
+
+        for(var i=0; i < opItems.length; i++) {
+
+            const op = opItems[i];
+
+            const payment = getNanoValue( op.payment );
+            const commission = getNanoValue( op.commission );
+            const desc = op.description;
+            const date = new Date(op.date); //Date.parse(op.date);
+            const dateStr = Intl.DateTimeFormat('ru-RU').format(date);
+
+            console.log(`${dateStr} ${desc} ${payment+commission} руб`);
+        }
+
+        //console.log(ops);
+    }
+
+    function saveCloudForm(form, event) {
+            event.preventDefault();
+
+            const key = form.key.value
+            const value = form.value.value
+
+            Telegram.WebApp.CloudStorage.setItem(key, value, function(err, saved) {
+                if (err) {
+                    Telegram.WebApp.showAlert('Error: ' + err);
+                } else {
+                    if (saved) {
+                        if (typeof cloudStorageItems[key] === 'undefined') {
+                            cloudStorageKeys.push(key);
+                        }
+                        cloudStorageItems[key] = value;
+                    }
+                    form.reset();
+                }
+            });
+        }
+
+
+    class TUser {
+
+        constructor(token, accountId) {
+            this.token = token;
+            this.accountId = accountId;
+        }
+
+        getFutures(onCallback) {
+
+            fetch(futsUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(futStatusArg) })
+                .then((response) => response.json())
+                .then((data) => onCallback && onCallback(data.instruments))
+                .catch((error) => console.error("getFutures() Error:", error));
+        }
+
+        getAccounts(onCallback) {
+
+            fetch(accUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(emptyArg) })
+                .then((response) => response.json())
+                .then((data) => onCallback && onCallback(data.accounts))
+                .catch((error) => console.error("getAccounts() Error:", error));
+        }
+
+        getPortfolio(onCallback) {
+
+            const accStatusArg = { accountId: this.accountId };
+
+            fetch(pfUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(accStatusArg) })
+                .then((response) => response.json())
+                .then((data) => this.setPortfolioPositions(data.positions, onCallback))
+                .catch((error) => console.error("getPortfolio() Error:", error));
+        }
+
+        setPortfolioPositions(positions, onCallback) {
+            
+            var pf = {};
+            pf.poses = [];
+    
+            var pidx = 0;
+    
+            for(var i=0; i < positions.length; i++) {
+    
+                var pose = positions[i];
+    
+                if(pose.figi != 'RUB000UTSTOM') {
+                    pf.poses[pidx++] = { avgPrice: getNanoValue( pose.averagePositionPrice), lots: +pose.quantityLots.units, instrumentUid: pose.instrumentUid, curPrice: getNanoValue(pose.currentPrice), varMargin: getNanoValue(pose.varMargin), profit: getNanoValue(pose.expectedYield)};
+                }
+                else {
+                    pf.blocked = +pose.blockedLots.units;
+                    pf.balance = +pose.quantityLots.units;
+                }
+            }
+
+            this.portfolio = pf;
+
+            return onCallback && onCallback(this);
+        }
+
+        getDepositOperations(onCallback) {
+
+            const opStatusArg = { accountId: this.accountId, state: "OPERATION_STATE_EXECUTED", limit: 1000, operationTypes: depositOperationTypes, withoutCommissions: true, withoutTrades: true, withoutOvernights: true };
+
+            fetch(opsUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(opStatusArg) })
+                .then((response) => response.json())
+                .then((data) => onCallback && onCallback(data.items))
+                .catch((error) => console.error("getOperations() Error:", error));
+        }
+    }
+
+    </script>
+
+    <title>Т-Инвестиции</title>
+
+    <style>
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+        }
+
+        .ok {
+            color: green;
+        }
+
+        .err {
+            color: red;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .hint {
+            color: blue;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <section id="top_sect" class="center">
+        <div>
+            Name: <span id="name"></span>,
+        </div>
+        <div>
+            Депозит: <span id="depo"></span>,
+        </div>
+        <div>
+            Баланс: <span id="bal"></span>,
+        </div>
+    </section>        
+
+    <table id="opsTable" width="100%">
+        <thead>
+        <tr>
+            <th width="20%">Дата</th>
+            <th width="60%">Операция</th>
+            <th width="20%">Сумма</th>
+        </tr>
+        </thead>
+        <tbody id="cloud_rows"></tbody>
+    </table>
+
+    <section id="bot_sect" class="center hidden">
+
+    <p>Cloud storage:</p>
+    <form onsubmit="DemoApp.saveCloudForm(this, event);">
+        <table class="table table-bordered small">
+            <thead>
+            <tr>
+                <th width="20%">Key</th>
+                <th width="70%">Value</th>
+                <th width="10%"></th>
+            </tr>
+            </thead>
+            <tbody id="cloud_rows"></tbody>
+            <tfoot>
+            <tr>
+                <td><input type="text" name="key" /></td>
+                <td><input type="text" name="value" /></td>
+                <td>
+                    <button type="submit">Save</button>
+                    <button type="reset">Clear</button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+    </section>        
+
+    <script type="application/javascript">
+
+        if(Telegram.WebApp.initData) {
+
+            const params2 = new URLSearchParams(Telegram.WebApp.initData);
+            const userData2 = Object.fromEntries(params2);
+
+            const tgUser = JSON.parse(userData2.user);
+
+            var el2 = document.getElementById('name');
+
+            el2.innerText = tgUser.first_name;
+        }
+        else {
+
+            var tableEl = document.getElementById('opsTable');
+            var sectEl = document.getElementById('top_sect');
+
+            tableEl.classList.add('hidden');
+            sectEl.classList.add('hidden');
+
+            document.body.innerHTML += '<p>Прямой зауск!</p>';
+        }
+
+        if (!WebTorrent.WEBRTC_SUPPORT)
+            document.body.innerHTML += '<p>Please use a WebRTC compatible browser</p>';
+
+    </script>
+
+</body>
+</html>
