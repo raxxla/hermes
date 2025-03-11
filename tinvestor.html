@@ -149,21 +149,32 @@
         //console.log(ops);
     }
 
+    function getTokenAccounts(token, onCallback) {
+
+        fetch(accUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + token }, body: JSON.stringify(emptyArg) })
+            .then((response) => response.json())
+            .then((data) => onCallback && onCallback(data.accounts))
+            .catch((error) => console.error("getAccounts() Error:", error));
+    }
+
     function saveCloudForm(form, event) {
             event.preventDefault();
 
             const key = form.key.value
-            const value = form.value.value
 
-            Telegram.WebApp.CloudStorage.setItem(key, value, function(err, saved) {
+            Telegram.WebApp.CloudStorage.setItem('tint', key, function(err, saved) {
                 if (err) {
                     Telegram.WebApp.showAlert('Error: ' + err);
                 } else {
                     if (saved) {
-                        if (typeof cloudStorageItems[key] === 'undefined') {
-                            cloudStorageKeys.push(key);
+                        if (typeof cloudStorageItems['tint'] === 'undefined') {
+                            cloudStorageKeys.push('tint');
                         }
-                        cloudStorageItems[key] = value;
+                        cloudStorageItems['tint'] = key;
+
+                        document.getElementById('bot_sect').classList.add('hidden');
+
+                        runBot(key);
                     }
                     form.reset();
                 }
@@ -171,7 +182,7 @@
         }
 
 
-    class TUser {
+        class TUser {
 
         constructor(token, accountId) {
             this.token = token;
@@ -274,9 +285,7 @@
 
 <body>
     <section id="top_sect" class="center">
-        <div>
-            Name: <span id="name"></span>,
-        </div>
+        <div><span id="name"></span></div>
         <div>
             Депозит: <span id="depo"></span>,
         </div>
@@ -298,13 +307,12 @@
 
     <section id="bot_sect" class="center hidden">
 
-    <p>Cloud storage:</p>
-    <form onsubmit="DemoApp.saveCloudForm(this, event);">
+    <p>Токен доступа Т-Инвестиции:</p>
+    <form onsubmit="saveCloudForm(this, event);">
         <table class="table table-bordered small">
             <thead>
             <tr>
-                <th width="20%">Key</th>
-                <th width="70%">Value</th>
+                <th width="80%">Токен</th>
                 <th width="10%"></th>
             </tr>
             </thead>
@@ -312,7 +320,6 @@
             <tfoot>
             <tr>
                 <td><input type="text" name="key" /></td>
-                <td><input type="text" name="value" /></td>
                 <td>
                     <button type="submit">Save</button>
                     <button type="reset">Clear</button>
@@ -325,7 +332,13 @@
 
     <script type="application/javascript">
 
+        function runBot(tint) {
+
+        }
+
         if(Telegram.WebApp.initData) {
+
+            var sect_bot = document.getElementById('bot_sect');
 
             const params2 = new URLSearchParams(Telegram.WebApp.initData);
             const userData2 = Object.fromEntries(params2);
@@ -335,6 +348,25 @@
             var el2 = document.getElementById('name');
 
             el2.innerText = tgUser.first_name;
+
+            Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
+                            if (err) {
+                                Telegram.WebApp.showAlert('Error: ' + err);
+                            } else {
+                                cloudStorageKeys.push(value);
+                                cloudStorageItems['tint'] = value;
+                                
+                                runBot(value);
+                                
+                                //DemoApp.updateCloudRows();
+                            }
+                        });
+
+            if(typeof tint =="string" && tint.length > 60) {
+            }
+            else {
+                sect_bot.classList.remove('hidden');
+            }
         }
         else {
 
