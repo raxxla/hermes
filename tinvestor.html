@@ -231,16 +231,18 @@
 
             fetch(pfUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(accStatusArg) })
                 .then((response) => response.json())
-                .then((data) => this.setPortfolioPositions(data.positions, onCallback))
+                .then((data) => this.setPortfolioPositions(data, onCallback))
                 .catch((error) => console.error("getPortfolio() Error:", error));
         }
 
-        setPortfolioPositions(positions, onCallback) {
+        setPortfolioPositions(data, onCallback) {
             
             var pf = {};
             pf.poses = [];
     
             var pidx = 0;
+
+            const positions = data.positions;
     
             for(var i=0; i < positions.length; i++) {
     
@@ -254,6 +256,8 @@
                     pf.balance = +pose.quantityLots.units;
                 }
             }
+
+            pf.balanceTotal = +data.totalAmountPortfolio.units;
 
             this.portfolio = pf;
 
@@ -310,6 +314,7 @@
 <body>
     <section id="top_sect" class="center">
         <div><span class="bigtext" id="user_name"></span></div><br>
+        <div><span id="user_account"></span></div><br>
         <div>
             Депозит: <span id="depo"></span><br>
         </div>
@@ -347,7 +352,7 @@
                 <td>Токен:</td>
                 <td><input type="text" name="key" /></td>
                 <td>
-                    <button type="submit">Save</button>
+                    <button type="submit">Запомнить</button>
                 </td>
             </tr>
             </tfoot>
@@ -365,8 +370,7 @@
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
         var tgUser = {};
-        var curToken = '';
-        var curAccountId = '';
+        var curTUser = {};
 
         if(Telegram.WebApp.initData) {
 
@@ -392,12 +396,11 @@
 
                             } else {
 
-                                if(typeof value == "string" && value.length > 60) {
+                                if(typeof value == 'string' && value.length > 60) {
                                     //userNameSpan.innerText += ' ok';
                                     runBot(value);
                                 }
                                 else {
-                                    userNameSpan.innerText += ' ??';
                                     tokenSect.classList.remove('hidden');
                                     tableOps.classList.add('hidden');
                                 }
@@ -412,7 +415,7 @@
 
             userNameSpan.innerText = `${tType} ${myToken}`;
 
-            if(tType =="string" && myToken.length > 60) {
+            if(tType == 'string' && myToken.length > 60) {
 
                 runBot(myToken);
             }
@@ -435,13 +438,21 @@
 
         function setAcconts(token, accounts, accIndex) {
 
-            if(isWebApp)
-                userNameSpan.innerText = `${tgUser.first_name} ${accounts[accIndex].name}`;
-            else
+            if(isWebApp) {
+                userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');// `${tgUser.first_name} ${accounts[accIndex].name}`;
+                document.getElementById('user_account').innerText = accounts[accIndex].name;
+            }
+            else {
                 userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
+            }
 
-            curToken = token;
-            curAccountId = accounts[accIndex].id;
+            curTUser = new TUser(token, accounts[accIndex].id);
+
+            curTUser.getPortfolio((user) => setUserPortfolio(user));
+        }
+
+        function setUserPortfolio(user) {
+            document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} руб. (${user.portfolio.balance} руб.)`;
         }
 
 
