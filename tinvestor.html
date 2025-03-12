@@ -400,7 +400,7 @@
             const myToken = localStorage.getItem('token');// getCookie('token');
             const tType = typeof myToken;
 
-            userNameSpan.innerText = tType + myToken;
+            userNameSpan.innerText = `${tType} ${myToken}`;
 
             if(tType =="string" && myToken.length > 60) {
 
