@@ -354,6 +354,10 @@
 
     <script type="application/javascript">
 
+        if (typeof localStorage === 'undefined') {
+	        alert("localStorage не работает!");
+        }
+
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
