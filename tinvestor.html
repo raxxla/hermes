@@ -168,10 +168,13 @@
 
             form.reset();
 
-            Telegram.WebApp.CloudStorage.setItem('tinit', key, function(err, saved) {
+            if(Telegram.WebApp.initData) {
+
+                Telegram.WebApp.CloudStorage.setItem('tinit', key, function(err, saved) {
                 if (err) {
                     Telegram.WebApp.showAlert('Error: ' + err);
-                } else {
+                } 
+                else {
                     if (saved) {
                         if (typeof cloudStorageItems['tinit'] === 'undefined') {
                             cloudStorageKeys.push('tinit');
@@ -181,7 +184,18 @@
                         runBot(key);
                     }
                 }
-            });
+                });
+
+            }
+            else {
+
+            // Куки сроком на 10 лет:
+            document.cookie = "token="+key+";max-age=26297430";
+
+            runBot(key);
+
+            }
+
         }
 
 
@@ -312,7 +326,7 @@
         <tbody id="ops_rows"></tbody>
     </table>
 
-    <section id="bot_sect" class="center hidden">
+    <section id="token_sect" class="center hidden">
 
     <p>Токен доступа Т-Инвестиции:</p>
     <form onsubmit="saveCloudForm(this, event);">
@@ -338,8 +352,8 @@
 
     <script type="application/javascript">
 
-        var tableEl = document.getElementById('opsTable');
-        var sect_bot = document.getElementById('bot_sect');
+        var tableOps = document.getElementById('opsTable');
+        var tokenSect = document.getElementById('token_sect');
 
         if(Telegram.WebApp.initData) {
 
@@ -368,13 +382,18 @@
         }
         else {
 
-            // Куки сроком на год:
-            document.cookie = "name=user;max-age=2629743";
+            var myToken = '';
 
-            var sectEl = document.getElementById('top_sect');
+            myToken = getCookie('token');
 
-            tableEl.classList.add('hidden');
-            sectEl.classList.add('hidden');
+            if(typeof myToken =="string" && myToken.length > 60) {
+            }
+            else {
+                tokenSect.classList.remove('hidden');
+            }
+
+            tableOps.classList.add('hidden');
+            tokenSect.classList.remove('hidden');
 
             document.body.innerHTML += '<p>Прямой зауск!</p>';
         }
@@ -382,11 +401,10 @@
         function runBot(token) {
 
             tableEl.classList.remove('hidden');
-            sect_bot.classList.add('hidden');
+            tokenSect.classList.add('hidden');
 
             Telegram.WebApp.showAlert('Token: ' + token);
         }
-
 
 //        if (!WebTorrent.WEBRTC_SUPPORT)
 //            document.body.innerHTML += '<p>Please use a WebRTC compatible browser</p>';
