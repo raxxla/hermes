@@ -356,6 +356,7 @@
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
+        var tgUser = {};
 
         if(Telegram.WebApp.initData) {
 
@@ -364,9 +365,9 @@
             const params2 = new URLSearchParams(Telegram.WebApp.initData);
             const userData2 = Object.fromEntries(params2);
 
-            const tgUser = JSON.parse(userData2.user);
+            tgUser = JSON.parse(userData2.user);
 
-            userNameSpan.innerText = tgUser.first_name + '!';
+            userNameSpan.innerText = tgUser.first_name;
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
                             if (err) {
@@ -377,11 +378,15 @@
 
                             } else {
 
-                                userNameSpan.innerText += '!';
-
-                                runBot(value, true);
-                                
-                                //DemoApp.updateCloudRows();
+                                if(typeof value =="string" && value.length > 60) {
+                                    //userNameSpan.innerText += ' ok';
+                                    runBot(value, true);
+                                }
+                                else {
+                                    userNameSpan.innerText += ' ??';
+                                    tokenSect.classList.remove('hidden');
+                                    tableOps.classList.add('hidden');
+                                }
                             }
                         });
 
@@ -411,8 +416,8 @@
             tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
-            if(webApp)
-                Telegram.WebApp.showAlert('Token: ' + token);
+            //if(webApp)
+            //    Telegram.WebApp.showAlert('Token: ' + token);
         }
 
 //        if (!WebTorrent.WEBRTC_SUPPORT)
