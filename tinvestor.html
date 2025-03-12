@@ -191,6 +191,8 @@
 
                 //alert('Token saved to localStorage');
 
+                //userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
+
                 document.getElementById('user_name').innerText = `${typeof key} ${key}`;
 
                 runBot(key);
@@ -379,7 +381,7 @@
 
             isAdmin = tgUser.id == '195251021';
 
-            userNameSpan.innerText = tgUser.first_name + isAdmin ? ' !' : '';
+            userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
                             if (err) {
@@ -404,8 +406,6 @@
 
         }
         else {
-
-            userNameSpan.innerText = 'User';
 
             const myToken = localStorage.getItem('token');// getCookie('token');
             const tType = typeof myToken;
