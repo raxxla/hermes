@@ -319,7 +319,7 @@
             Депозит: <span id="depo"></span><br>
         </div>
         <div>
-            Баланс: <span id="bal"></span><br>
+            Баланс: <span id="bal"></span><br><br>
         </div>
     </section>        
 
@@ -446,6 +446,8 @@
                 userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
             }
 
+            sleep(1500);
+
             curTUser = new TUser(token, accounts[accIndex].id);
 
             curTUser.getPortfolio((user) => setUserPortfolio(user));
@@ -462,14 +464,28 @@
         function setUserDepositOps(user, ops) {
 
             var depoTotal = 0;
+            let html = '';
 
             ops.forEach(op => {
-                const payment = +op.payment.units;
+                //const payment = +op.payment.units;
+
+                const payment = getNanoValue( op.payment );
+                const commission = getNanoValue( op.commission );
+                const desc = op.description;
+                const date = new Date(op.date); //Date.parse(op.date);
+                const dateStr = Intl.DateTimeFormat('ru-RU').format(date);
 
                 depoTotal += payment;
+
+                html += '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+(payment+commission)+' руб.</td></tr>';
+
             });
 
+            depoTotal = Math.round( depoTotal );
+
             document.getElementById('depo').innerText = `${depoTotal} руб.`;
+
+            document.getElementById('ops_rows').innerHTML = html;
         }
 
 
