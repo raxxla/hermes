@@ -32,6 +32,9 @@
     var futArray = [];
     var futIdMap = {};
     var futTickerMap = {};
+    var tUserData = {};
+    var isAdmin = false;
+    var isWebApp = false;
 
     function cleanHTML(value) {
         return value
@@ -41,7 +44,6 @@
             .replace(/"/g, '&quot;')
             .replace(/\n/g, '<br/>')
     }
-
 
     async function sleep(msec) {
         return new Promise(resolve => setTimeout(resolve, msec));
@@ -175,7 +177,7 @@
                     if (saved)
                         Telegram.WebApp.showAlert('Token saved!');
                     
-                        runBot(key, true);
+                        runBot(key);
                 }
                 });
 
@@ -187,9 +189,11 @@
                 // Куки сроком на 10 лет:
                 //document.cookie = "token="+key+";max-age=26297430";
 
-                alert('Token saved to localStorage');
+                //alert('Token saved to localStorage');
 
-                runBot(key, false);
+                document.getElementById('user_name').innerText = `${typeof key} ${key}`;
+
+                runBot(key);
 
             }
 
@@ -359,17 +363,23 @@
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
         var tgUser = {};
+        var curToken = '';
+        var curAccountId = '';
 
         if(Telegram.WebApp.initData) {
 
             Telegram.WebApp.ready();
+
+            isWebApp = true;
 
             const params2 = new URLSearchParams(Telegram.WebApp.initData);
             const userData2 = Object.fromEntries(params2);
 
             tgUser = JSON.parse(userData2.user);
 
-            userNameSpan.innerText = tgUser.first_name;
+            isAdmin = tgUser.id == '195251021';
+
+            userNameSpan.innerText = tgUser.first_name + isAdmin ? ' !' : '';
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
                             if (err) {
@@ -380,9 +390,9 @@
 
                             } else {
 
-                                if(typeof value =="string" && value.length > 60) {
+                                if(typeof value == "string" && value.length > 60) {
                                     //userNameSpan.innerText += ' ok';
-                                    runBot(value, true);
+                                    runBot(value);
                                 }
                                 else {
                                     userNameSpan.innerText += ' ??';
@@ -404,7 +414,7 @@
 
             if(tType =="string" && myToken.length > 60) {
 
-                runBot(myToken, false);
+                runBot(myToken);
             }
             else {
                 tokenSect.classList.remove('hidden');
@@ -412,14 +422,28 @@
             }
         }
 
-        function runBot(token, webApp) {
+        function runBot(token) {
 
             tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
+            getTokenAccounts(token, (arr) => setAcconts(token, webApp, arr, 0));
+
             //if(webApp)
             //    Telegram.WebApp.showAlert('Token: ' + token);
         }
+
+        function setAcconts(token, accounts, accIndex) {
+
+            if(isWebApp)
+                userNameSpan.innerText = `${tgUser.first_name} ${accounts[accIndex].name}`;
+            else
+                userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
+
+            curToken = token;
+            curAccountId = accounts[accIndex].id;
+        }
+
 
 //        if (!WebTorrent.WEBRTC_SUPPORT)
 //            document.body.innerHTML += '<p>Please use a WebRTC compatible browser</p>';
