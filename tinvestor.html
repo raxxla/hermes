@@ -473,14 +473,11 @@
                 const commission = getNanoValue( op.commission );
                 const desc = op.description;
                 const date = new Date(op.date); //Date.parse(op.date);
-                const dateStr = Intl.DateTimeFormat('ru-RU').format(date);
-
-                dateStr = dateStr.replace('2024', '24');
-                dateStr = dateStr.replace('2025', '25');
+                const dateStr = Intl.DateTimeFormat('ru-RU').format(date).replace('2024', '24').replace('2025', '25');
 
                 depoTotal += payment;
 
-                html += '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+(payment+commission)+' р.</td></tr>';
+                html += '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+Math.round(payment+commission)+' р.</td></tr>';
 
             });
 
