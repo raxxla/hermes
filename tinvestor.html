@@ -192,6 +192,8 @@
             // Куки сроком на 10 лет:
             document.cookie = "token="+key+";max-age=26297430";
 
+            alert('Token saved to cookie');
+
             runBot(key);
 
             }
@@ -330,7 +332,7 @@
 
     <p>Токен доступа Т-Инвестиции:</p>
     <form onsubmit="saveCloudForm(this, event);">
-        <table class="table table-bordered small">
+        <table>
             <thead>
             <tr>
                 <th width="80%">Токен</th>
@@ -387,6 +389,8 @@
             myToken = getCookie('token');
 
             if(typeof myToken =="string" && myToken.length > 60) {
+                
+                runBot(myToken);
             }
             else {
                 tokenSect.classList.remove('hidden');
