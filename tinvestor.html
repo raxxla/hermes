@@ -181,7 +181,7 @@
                         }
                         cloudStorageItems['tinit'] = key;
 
-                        runBot(key);
+                        runBot(key, true);
                     }
                 }
                 });
@@ -194,7 +194,7 @@
 
             alert('Token saved to cookie');
 
-            runBot(key);
+            runBot(key, false);
 
             }
 
@@ -308,7 +308,7 @@
 
 <body>
     <section id="top_sect" class="center">
-        <div><span class="bigtext" id="name"></span></div><br>
+        <div><span class="bigtext" id="user_name"></span></div><br>
         <div>
             Депозит: <span id="depo"></span><br>
         </div>
@@ -356,17 +356,18 @@
 
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
+        var userNameSpan = document.getElementById('user_name');
 
         if(Telegram.WebApp.initData) {
+
+            Telegram.WebApp.ready();
 
             const params2 = new URLSearchParams(Telegram.WebApp.initData);
             const userData2 = Object.fromEntries(params2);
 
             const tgUser = JSON.parse(userData2.user);
 
-            var el2 = document.getElementById('name');
-
-            el2.innerText = tgUser.first_name;
+            userNameSpan.innerText = tgUser.first_name;
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
                             if (err) {
@@ -375,7 +376,7 @@
                                 cloudStorageKeys.push('tinit');
                                 cloudStorageItems['tinit'] = value;
                                 
-                                runBot(value);
+                                runBot(value, true);
                                 
                                 //DemoApp.updateCloudRows();
                             }
@@ -384,13 +385,17 @@
         }
         else {
 
+            userNameSpan.innerText = 'User';
+
             var myToken = '';
 
             myToken = getCookie('token');
 
+            userNameSpan.innerText = myToken;
+
             if(typeof myToken =="string" && myToken.length > 60) {
 
-                runBot(myToken);
+                runBot(myToken, false);
             }
             else {
                 tokenSect.classList.remove('hidden');
@@ -400,12 +405,13 @@
             document.body.innerHTML += '<p>Прямой зауск!</p>';
         }
 
-        function runBot(token) {
+        function runBot(token, webApp) {
 
             tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
-            //Telegram.WebApp.showAlert('Token: ' + token);
+            if(webApp)
+                Telegram.WebApp.showAlert('Token: ' + token);
         }
 
 //        if (!WebTorrent.WEBRTC_SUPPORT)
