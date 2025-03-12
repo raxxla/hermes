@@ -270,8 +270,8 @@
 
             fetch(opsUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(opStatusArg) })
                 .then((response) => response.json())
-                .then((data) => onCallback && onCallback(data.items))
-                .catch((error) => console.error("getOperations() Error:", error));
+                .then((data) => onCallback && onCallback(this, data.items))
+                .catch((error) => console.error("getDepositOperations() Error:", error));
         }
     }
 
@@ -430,13 +430,13 @@
             tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
-            getTokenAccounts(token, (arr) => setAcconts(token, webApp, arr, 0));
+            getTokenAccounts(token, (arr) => setTokenAcconts(token, arr, 0));
 
             //if(webApp)
             //    Telegram.WebApp.showAlert('Token: ' + token);
         }
 
-        function setAcconts(token, accounts, accIndex) {
+        function setTokenAcconts(token, accounts, accIndex) {
 
             if(isWebApp) {
                 userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');// `${tgUser.first_name} ${accounts[accIndex].name}`;
@@ -453,6 +453,23 @@
 
         function setUserPortfolio(user) {
             document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} руб. (${user.portfolio.balance} руб.)`;
+
+            sleep(1500);
+
+            user.getDepositOperations((user, ops) => setUserDepositOps(user, ops));
+        }
+
+        function setUserDepositOps(user, ops) {
+
+            var depoTotal = 0;
+
+            ops.forEach(op => {
+                const payment = +op.payment.units;
+
+                depoTotal += payment;
+            });
+
+            document.getElementById('depo').innerText = `${depoTotal} руб.`;
         }
 
 
