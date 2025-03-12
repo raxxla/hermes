@@ -389,25 +389,23 @@
             myToken = getCookie('token');
 
             if(typeof myToken =="string" && myToken.length > 60) {
-                
+
                 runBot(myToken);
             }
             else {
                 tokenSect.classList.remove('hidden');
+                tableOps.classList.add('hidden');
             }
-
-            tableOps.classList.add('hidden');
-            tokenSect.classList.remove('hidden');
 
             document.body.innerHTML += '<p>Прямой зауск!</p>';
         }
 
         function runBot(token) {
 
-            tableEl.classList.remove('hidden');
+            tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
-            Telegram.WebApp.showAlert('Token: ' + token);
+            //Telegram.WebApp.showAlert('Token: ' + token);
         }
 
 //        if (!WebTorrent.WEBRTC_SUPPORT)
