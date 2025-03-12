@@ -366,15 +366,19 @@
 
             const tgUser = JSON.parse(userData2.user);
 
-            userNameSpan.innerText = tgUser.first_name;
+            userNameSpan.innerText = tgUser.first_name + '!';
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
                             if (err) {
-                                Telegram.WebApp.showAlert('Error: ' + err);
-                            } else {
-                                cloudStorageKeys.push('tinit');
-                                cloudStorageItems['tinit'] = value;
                                 
+                                userNameSpan.innerText += '?';
+
+                                Telegram.WebApp.showAlert('Error: ' + err);
+
+                            } else {
+
+                                userNameSpan.innerText += '!';
+
                                 runBot(value, true);
                                 
                                 //DemoApp.updateCloudRows();
