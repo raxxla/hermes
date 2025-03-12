@@ -325,18 +325,20 @@
 
     <section id="token_sect" class="center hidden">
 
-    <p>Токен доступа Т-Инвестиции:</p>
+    <p>Токен доступа для Т-Инвестиций:</p>
     <form onsubmit="saveCloudForm(this, event);">
         <table>
             <thead>
             <tr>
-                <th width="80%">Токен</th>
+                <th width="10%"></th>
+                <th width="80%"></th>
                 <th width="10%"></th>
             </tr>
             </thead>
             <tbody id="cloud_rows"></tbody>
             <tfoot>
             <tr>
+                <td>Токен:</td>
                 <td><input type="text" name="key" /></td>
                 <td>
                     <button type="submit">Save</button>
@@ -395,13 +397,12 @@
 
             userNameSpan.innerText = 'User';
 
-            var myToken = '';
+            const myToken = localStorage.getItem('token');// getCookie('token');
+            const tType = typeof myToken;
 
-            myToken = localStorage.getItem('token');// getCookie('token');
+            userNameSpan.innerText = tType + myToken;
 
-            userNameSpan.innerText = myToken;
-
-            if(typeof myToken =="string" && myToken.length > 60) {
+            if(tType =="string" && myToken.length > 60) {
 
                 runBot(myToken, false);
             }
