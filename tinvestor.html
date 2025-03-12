@@ -159,7 +159,7 @@
         fetch(accUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + token }, body: JSON.stringify(emptyArg) })
             .then((response) => response.json())
             .then((data) => onCallback && onCallback(data.accounts))
-            .catch((error) => console.error("getAccounts() Error:", error));
+            .catch((error) => console.error("getTokenAccounts() Error:", error));
     }
 
     function saveCloudForm(form, event) {
@@ -167,21 +167,20 @@
 
             const key = form.key.value
 
-            Telegram.WebApp.CloudStorage.setItem('tint', key, function(err, saved) {
+            form.reset();
+
+            Telegram.WebApp.CloudStorage.setItem('tinit', key, function(err, saved) {
                 if (err) {
                     Telegram.WebApp.showAlert('Error: ' + err);
                 } else {
                     if (saved) {
-                        if (typeof cloudStorageItems['tint'] === 'undefined') {
-                            cloudStorageKeys.push('tint');
+                        if (typeof cloudStorageItems['tinit'] === 'undefined') {
+                            cloudStorageKeys.push('tinit');
                         }
-                        cloudStorageItems['tint'] = key;
-
-                        document.getElementById('bot_sect').classList.add('hidden');
+                        cloudStorageItems['tinit'] = key;
 
                         runBot(key);
                     }
-                    form.reset();
                 }
             });
         }
@@ -269,7 +268,7 @@
         }
 
         .bigtext {
-            font-size: large;
+            font-size: x-large;
         }
 
         .ok {
@@ -311,7 +310,7 @@
             <th width="20%">Сумма</th>
         </tr>
         </thead>
-        <tbody id="cloud_rows"></tbody>
+        <tbody id="ops_rows"></tbody>
     </table>
 
     <section id="bot_sect" class="center hidden">
@@ -341,16 +340,9 @@
     <script type="application/javascript">
 
         var tableEl = document.getElementById('opsTable');
-
-
-        function runBot(tint) {
-
-            tableEl.classList.remove('hidden');
-        }
+        var sect_bot = document.getElementById('bot_sect');
 
         if(Telegram.WebApp.initData) {
-
-            var sect_bot = document.getElementById('bot_sect');
 
             const params2 = new URLSearchParams(Telegram.WebApp.initData);
             const userData2 = Object.fromEntries(params2);
@@ -365,8 +357,8 @@
                             if (err) {
                                 Telegram.WebApp.showAlert('Error: ' + err);
                             } else {
-                                cloudStorageKeys.push(value);
-                                cloudStorageItems['tint'] = value;
+                                cloudStorageKeys.push('tinit');
+                                cloudStorageItems['tinit'] = value;
                                 
                                 runBot(value);
                                 
@@ -374,12 +366,6 @@
                             }
                         });
 
-            if(typeof tint =="string" && tint.length > 60) {
-            }
-            else {
-                sect_bot.classList.remove('hidden');
-                tableEl.classList.add('hidden');
-            }
         }
         else {
 
@@ -394,10 +380,19 @@
             document.body.innerHTML += '<p>Прямой зауск!</p>';
         }
 
-        if (!WebTorrent.WEBRTC_SUPPORT)
-            document.body.innerHTML += '<p>Please use a WebRTC compatible browser</p>';
-        else
-            document.body.innerHTML += '<p>Есть поддержка WebRTC!</p>';
+        function runBot(token) {
+
+            tableEl.classList.remove('hidden');
+            sect_bot.classList.add('hidden');
+
+            Telegram.WebApp.showAlert('Token: ' + token);
+        }
+
+
+//        if (!WebTorrent.WEBRTC_SUPPORT)
+//            document.body.innerHTML += '<p>Please use a WebRTC compatible browser</p>';
+//        else
+//            document.body.innerHTML += '<p>Есть поддержка WebRTC!</p>';
 
     </script>
 
