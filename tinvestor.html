@@ -32,9 +32,6 @@
     var futArray = [];
     var futIdMap = {};
     var futTickerMap = {};
-        // cloud storage
-    var cloudStorageKeys = {};
-    var cloudStorageItems = {};
 
     function cleanHTML(value) {
         return value
@@ -175,26 +172,24 @@
                     Telegram.WebApp.showAlert('Error: ' + err);
                 } 
                 else {
-                    if (saved) {
-                        if (typeof cloudStorageItems['tinit'] === 'undefined') {
-                            cloudStorageKeys.push('tinit');
-                        }
-                        cloudStorageItems['tinit'] = key;
-
+                    if (saved)
+                        Telegram.WebApp.showAlert('Token saved!');
+                    
                         runBot(key, true);
-                    }
                 }
                 });
 
             }
             else {
 
-            // Куки сроком на 10 лет:
-            document.cookie = "token="+key+";max-age=26297430";
+                localStorage.setItem('token', key);
 
-            alert('Token saved to cookie');
+                // Куки сроком на 10 лет:
+                //document.cookie = "token="+key+";max-age=26297430";
 
-            runBot(key, false);
+                alert('Token saved to localStorage');
+
+                runBot(key, false);
 
             }
 
@@ -393,7 +388,7 @@
 
             var myToken = '';
 
-            myToken = getCookie('token');
+            myToken = localStorage.getItem('token');// getCookie('token');
 
             userNameSpan.innerText = myToken;
 
@@ -405,8 +400,6 @@
                 tokenSect.classList.remove('hidden');
                 tableOps.classList.add('hidden');
             }
-
-            document.body.innerHTML += '<p>Прямой зауск!</p>';
         }
 
         function runBot(token, webApp) {
