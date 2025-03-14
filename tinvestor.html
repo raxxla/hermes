@@ -10,6 +10,7 @@
     <meta name="robots" content="noindex,nofollow" />
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="figi.js"></script>
 
     <script type="application/javascript">
 
@@ -81,22 +82,6 @@
 	    return matches ? decodeURIComponent(matches[1]) : undefined;
     }
 
-    function getFuture(futObj) {
-        return {
-            uid: futObj.uid,
-            ticker: futObj.ticker,
-            name: futObj.name,
-            lot: futObj.lot,
-            priceStep: getNanoValue( futObj.minPriceIncrement ),
-            priceStepAmount: getNanoValue( futObj.minPriceIncrementAmount ),
-            buyMargin: getNanoValue( futObj.initialMarginOnBuy ),
-            sellMargin: getNanoValue( futObj.initialMarginOnSell ),
-            basicAsset: futObj.basicAsset,
-            basicAssetSize: getNanoValue( futObj.basicAssetSize ),
-            expirationDate: Date.parse(futObj.expirationDate)
-        };
-    }
-
     function setFutures(futures) {
         const arr = Array.from(futures);
 
@@ -121,8 +106,25 @@
 
         //const kzz5 = futTickerMap["KZZ5"];
 
-        return `${index} futures`;
+        return futArray;// `${index} futures`;
     }
+
+    function getFuture(futObj) {
+        return {
+            ticker: futObj.ticker,
+            basicAsset: futObj.basicAsset,
+            basicAssetSize: getNanoValue( futObj.basicAssetSize ),
+            name: futObj.name,
+            lot: futObj.lot,
+            priceStep: getNanoValue( futObj.minPriceIncrement ),
+            priceStepAmount: getNanoValue( futObj.minPriceIncrementAmount ),
+            buyMargin: getNanoValue( futObj.initialMarginOnBuy ),
+            sellMargin: getNanoValue( futObj.initialMarginOnSell ),
+            expirationDate: Date.parse(futObj.expirationDate),
+            uid: futObj.uid,
+        };
+    }
+
 
     function setDepositOperations(opItems) {
 
@@ -191,18 +193,16 @@
 
                 //alert('Token saved to localStorage');
 
-                //userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
-
                 document.getElementById('user_name').innerText = `${typeof key} ${key}`;
 
                 runBot(key);
 
             }
 
-        }
+    }
 
 
-        class TUser {
+    class TUser {
 
         constructor(token, accountId) {
             this.token = token;
@@ -213,7 +213,7 @@
 
             fetch(futsUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(futStatusArg) })
                 .then((response) => response.json())
-                .then((data) => onCallback && onCallback(data.instruments))
+                .then((data) => onCallback && onCallback(getFutures( data.instruments)))
                 .catch((error) => console.error("getFutures() Error:", error));
         }
 
@@ -323,6 +323,20 @@
         </div>
     </section>        
 
+    <section id="pose_sect" class="center hidden">
+        <p class="bigtext">Позиции:</p>
+        <table width="100%">
+            <thead>
+            <tr>
+                <th width="20%">Тикер</th>
+                <th width="80%">Профит</th>
+            </tr>
+            </thead>
+            <tbody id="poses_rows"></tbody>
+        </table>
+    </section>        
+
+    <p class="bigtext">Операции:</p>
     <table id="opsTable" width="100%">
         <thead>
         <tr>
@@ -456,6 +470,23 @@
         function setUserPortfolio(user) {
             document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} руб. (${user.portfolio.balance} руб.)`;
 
+            document.getElementById('pose_sect').classList.remove('hidden');
+
+            let html = '';
+
+            user.portfolio.poses.forEach( pose => {
+
+                let info = figiMap[pose.figi];
+
+                if(info != null) {
+
+                    html += '<tr><td>'+info.ba+'</td><td>'+pose.lots+' шт.</td></tr>';
+                }
+
+            });
+
+            document.getElementById('poses_rows').innerHTML = html;
+
             sleep(1500);
 
             user.getDepositOperations((user, ops) => setUserDepositOps(user, ops));
@@ -477,8 +508,7 @@
 
                 depoTotal += payment;
 
-                html += '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+Math.round(payment+commission)+' р.</td></tr>';
-
+                html += '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+Math.round(payment+commission)+'</td></tr>';
             });
 
             depoTotal = Math.round( depoTotal );
@@ -487,7 +517,6 @@
 
             document.getElementById('ops_rows').innerHTML = html;
         }
-
 
 //        if (!WebTorrent.WEBRTC_SUPPORT)
 //            document.body.innerHTML += '<p>Please use a WebRTC compatible browser</p>';
