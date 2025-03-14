@@ -329,8 +329,8 @@
             <thead>
             <tr>
                 <th width="20%">Тикер</th>
-                <th width="20%">Кол-во</th>
-                <th width="60%">Профит</th>
+                <th width="40%">Кол-во</th>
+                <th width="40%">Профит</th>
             </tr>
             </thead>
             <tbody id="poses_rows"></tbody>
@@ -514,9 +514,10 @@
                 if(val.poseSell)
                     lots += `${val.poseSell.lots}`;
 
-                let pft = getPoseProfit(val.poseBuy) + getPoseProfit(val.poseSell);
+                let pft1 = getPoseProfit(val.poseBuy);
+                let pft2 = getPoseProfit(val.poseSell);
 
-                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+pft+' руб.</td></tr>';
+                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + ' руб.</td></tr>';
             }
 
             document.getElementById('poses_rows').innerHTML = html;
