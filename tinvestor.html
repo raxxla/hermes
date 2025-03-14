@@ -484,7 +484,7 @@
                 if(info != null) {
 
                     if(info.ba == 'TMON@') {
-                        html += '<tr><td>TMON@</td><td>+'+pose.lots+' шт. ('+ getPoseAmount(pose) + ' руб.)</td><td>'+getPoseProfit( pose )+' руб.</td></tr>';
+                        html += '<tr><td>TMON@</td><td>+'+pose.lots+' шт. ('+ getPoseAmount(pose) + ' р.)</td><td>'+getPoseProfit( pose )+' р.</td></tr>';
                     }
                     else {
                         if(!poseMap[info.ba])
@@ -517,7 +517,7 @@
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
 
-                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + ' руб.</td></tr>';
+                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + ' р.</td></tr>';
             }
 
             document.getElementById('poses_rows').innerHTML = html;
