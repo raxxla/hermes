@@ -28,3 +28,43 @@ figiMap['FUTMIX032500'] = { ba: 'IMOEX', t: 'MXH5', ps: 25, psa: 25 };
 figiMap['FUTMXI092600'] = { ba: 'IMOEX', t: 'MMU6', ps: 0.05, psa: 0.5 };
 figiMap['FUTMXI122500'] = { ba: 'IMOEX', t: 'MMZ5', ps: 0.05, psa: 0.5 };
 figiMap['FUTMIX092500'] = { ba: 'IMOEX', t: 'MXU5', ps: 25, psa: 25 };
+
+function getPriceAmountMul(figi) {
+    var info = figiMap[figi];
+
+    if (!info) {
+        console.error('Не найдена информация о цене для инструмента ', figi);
+        return 1;
+    }
+
+    return  Math.round(info.psa / info.ps * 100) / 100;
+
+}
+
+function getPoseAmount(pose) {
+
+    if(!pose) return 0;
+
+    let mul = getPriceAmountMul(pose.figi);
+
+    var curAmount = pose.curPrice * mul * Math.abs(pose.lots);
+
+    return Math.round(curAmount);
+}
+
+function getPoseProfit(pose)
+{
+    if(!pose) return 0;
+
+    let mul = getPriceAmountMul(pose.figi);
+
+    var enterAmount = pose.avgPrice * mul * Math.abs(pose.lots);
+    var exitAmount = pose.curPrice * mul * Math.abs(pose.lots);
+
+    if(pose.lots > 0) {
+        return Math.round( exitAmount - enterAmount);
+    }
+    else {
+        return Math.round( enterAmount - exitAmount);
+    }
+}

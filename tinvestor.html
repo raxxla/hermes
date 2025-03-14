@@ -248,8 +248,8 @@
     
                 var pose = positions[i];
     
-                if(pose.figi != 'RUB000UTSTOM') {
-                    pf.poses[pidx++] = { avgPrice: getNanoValue( pose.averagePositionPrice), lots: +pose.quantityLots.units, instrumentUid: pose.instrumentUid, curPrice: getNanoValue(pose.currentPrice), varMargin: getNanoValue(pose.varMargin), profit: getNanoValue(pose.expectedYield)};
+                if(pose.instrumentType != 'currency') { //.figi != 'RUB000UTSTOM') {
+                    pf.poses[pidx++] = { avgPrice: getNanoValue( pose.averagePositionPrice), lots: +pose.quantityLots.units, figi: pose.figi, instrumentUid: pose.instrumentUid, curPrice: getNanoValue(pose.currentPrice), varMargin: getNanoValue(pose.varMargin), profit: getNanoValue(pose.expectedYield)};
                 }
                 else {
                     pf.blocked = +pose.blockedLots.units;
@@ -323,13 +323,14 @@
         </div>
     </section>        
 
+    <p class="bigtext">Позиции:</p>
     <section id="pose_sect" class="center hidden">
-        <p class="bigtext">Позиции:</p>
         <table width="100%">
             <thead>
             <tr>
                 <th width="20%">Тикер</th>
-                <th width="80%">Профит</th>
+                <th width="20%">Кол-во</th>
+                <th width="60%">Профит</th>
             </tr>
             </thead>
             <tbody id="poses_rows"></tbody>
@@ -474,16 +475,49 @@
 
             let html = '';
 
+            let poseMap = {};
+
             user.portfolio.poses.forEach( pose => {
 
                 let info = figiMap[pose.figi];
 
                 if(info != null) {
 
-                    html += '<tr><td>'+info.ba+'</td><td>'+pose.lots+' шт.</td></tr>';
-                }
+                    if(info.ba == 'TMON@') {
+                        html += '<tr><td>TMON@</td><td>+'+pose.lots+' шт. ('+ getPoseAmount(pose) + ' руб.)</td><td>'+getPoseProfit( pose )+' руб.</td></tr>';
+                    }
+                    else {
+                        if(!poseMap[info.ba])
+                            poseMap[info.ba] = {};
 
+                        if(pose.lots > 0) {
+                            //poseMap[info.ba].buy = pose.lots;
+                            poseMap[info.ba].poseBuy = pose;
+
+                        }
+                        else {
+                            //poseMap[info.ba].sell = pose.lots;
+                            poseMap[info.ba].poseSell = pose;
+                        }
+                    }
+                }
             });
+
+            for(var key in poseMap) {
+
+                let val = poseMap[key];
+                let lots = '';
+
+                if(val.poseBuy)
+                    lots = `+${val.poseBuy.lots} `;
+                
+                if(val.poseSell)
+                    lots += `${val.poseSell.lots}`;
+
+                let pft = getPoseProfit(val.poseBuy) + getPoseProfit(val.poseSell);
+
+                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+pft+' руб.</td></tr>';
+            }
 
             document.getElementById('poses_rows').innerHTML = html;
 
@@ -494,7 +528,7 @@
 
         function setUserDepositOps(user, ops) {
 
-            var depoTotal = 0;
+            let depoTotal = 0;
             let html = '';
 
             ops.forEach(op => {
