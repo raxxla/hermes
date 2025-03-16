@@ -391,7 +391,7 @@
 
         function setUserId(response) {
 
-            const hash = response.headers.get('data-hash');
+            const hash = response.text();// response.headers.get('data-hash');
 
             if(typeof hash == "string" && hash.length > 40) {
 
