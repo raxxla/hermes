@@ -68,3 +68,46 @@ function getPoseProfit(pose)
         return Math.round( enterAmount - exitAmount);
     }
 }
+
+function getHash(data, len) {
+
+    if(!len)
+        len = 12;
+
+    let result = `${data}`;
+
+    while(result.length < len)
+        result += '1';
+
+    return result;
+}
+
+function encode(acc, data, dir) {
+
+    acc = getHash(acc);
+
+    let mydata = data;
+    
+    if(dir > 0)
+        mydata = acc+data.substring(2);
+
+    let result ='';
+    let idx = 0;
+
+    while(idx < mydata.length) {
+
+        for(let i=0; i < acc.length; i++) {
+
+            if(idx >= mydata.length)
+                return result;
+
+            let charCode = mydata.charCodeAt(idx++);
+            let shift = (acc.charCodeAt(i) - 48) * dir;
+
+            result += String.fromCharCode(charCode + shift);
+        }
+    }
+
+    return result;
+}
+

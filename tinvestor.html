@@ -24,6 +24,8 @@
     const operationsUrl = baseUrl + '/tinkoff.public.invest.api.contract.v1.OperationsService';
     const instrumentsUrl = baseUrl + '/tinkoff.public.invest.api.contract.v1.InstrumentsService';
 
+    const fileUrl = 'https://feebly-working-hoopoe.cloudpub.ru/';
+
     const accUrl = usersUrl + '/GetAccounts';
     const pfUrl = operationsUrl + '/GetPortfolio';
     const wdLimitsUrl = operationsUrl + '/GetWithdrawLimits';
@@ -387,6 +389,24 @@
         var tgUser = {};
         var curTUser = {};
 
+        function setUserId(response) {
+
+            const hash = response.headers.get('data-hash');
+
+            if(typeof hash == "string" && hash.length > 40) {
+
+                let data2 = encode(tgUser.id, hash, -1);
+    
+                let info = '';
+
+                if(data2.startsWith(getHash(tgUser.id))) {
+                    info = 't.' + data2.substring(12);
+
+                    Telegram.WebApp.showAlert('T: ' + info);
+                }
+            }
+        }
+
         if(Telegram.WebApp.initData) {
 
             Telegram.WebApp.ready();
@@ -401,6 +421,10 @@
             isAdmin = tgUser.id == '195251021';
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
+
+            fetch(fileUrl+tgUser.id, { method: "GET" })
+                .then((response) => setUserId(response))
+                .catch((error) => console.error(fileUrl + " Error:", error));
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
                             if (err) {
