@@ -385,9 +385,9 @@
         var tgUser = {};
         var curTUser = {};
 
-        async function setUserId(response, uid) {
+        function setUserId(hash, uid) {
 
-            const hash = await response.text();// response.headers.get('data-hash');
+            //const hash = await response.text();// response.headers.get('data-hash');
 
             if(typeof hash == "string" && hash.length > 40) {
 
@@ -445,7 +445,8 @@
                             }
                             else {
                                 fetch(fileUrl+tgUser.id, { method: "GET" })
-                                    .then((response) => setUserId(response, tgUser.id))
+                                    .then((response) => response.text())
+                                    .then((text) => setUserId(text, tgUser.id))
                                     .catch((error) => console.error(fileUrl + " Error:", error));
 
                                 //tokenSect.classList.remove('hidden');
