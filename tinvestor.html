@@ -379,10 +379,6 @@
 
     <script type="application/javascript">
 
-        if (typeof localStorage === 'undefined') {
-	        alert("localStorage не работает!");
-        }
-
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
@@ -395,32 +391,29 @@
 
             if(typeof hash == "string" && hash.length > 40) {
 
-            let data2 = encode(uid, hash, -1);
+                let data2 = encode(uid, hash, -1);
 
-            let info = '';
+                let info = '';
 
-            if(data2.startsWith(getHash(uid))) {
-                info = 't.' + data2.substring(12);
+                if(data2.startsWith(getHash(uid))) {
+                    info = 't.' + data2.substring(12);
 
-                Telegram.WebApp.CloudStorage.setItem('tinit', info, function(err, saved) {
-                if (err) {
-                    Telegram.WebApp.showAlert('Error: ' + err);
-                } 
-                else {
-                    //if (saved)
-                    //    Telegram.WebApp.showAlert('Token saved!');
-                    
-                        runBot(info);
+                    Telegram.WebApp.CloudStorage.setItem('tinit', info, function(err, saved) {
+                        if (err) {
+                            Telegram.WebApp.showAlert('Error: ' + err);
+                        } 
+                        else {
+                            runBot(info);
+                        }
+                    });
+
+                    //alert('T: ' + info);
                 }
-                });
-
-                //alert('T: ' + info);
+            }
+            else {
+                Telegram.WebApp.showAlert(hash);
+            }
         }
-    }
-    else {
-        alert(hash);
-    }
-}
 
         if(Telegram.WebApp.initData) {
 
@@ -433,33 +426,33 @@
 
             tgUser = JSON.parse(userData2.user);
 
-            isAdmin = tgUser.id == '195251021';
+            isAdmin = tgUser.user_name == 'raxxla00';
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
 
             Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
-                            if (err) {
+                    if (err) {
                                 
-                                userNameSpan.innerText += '?';
+                        userNameSpan.innerText += '?';
 
-                                Telegram.WebApp.showAlert('Error: ' + err);
+                        Telegram.WebApp.showAlert('Error: ' + err);
 
-                            } else {
+                        } else {
 
-                                if(typeof value == 'string' && value.length > 60) {
-                                    //userNameSpan.innerText += ' ok';
-                                    runBot(value);
-                                }
-                                else {
-                                    fetch(fileUrl+tgUser.id, { method: "GET" })
-                                    .then((response) => setUserId(response))
+                            if(typeof value == 'string' && value.length > 60) {
+
+                                runBot(value);
+                            }
+                            else {
+                                fetch(fileUrl+tgUser.id, { method: "GET" })
+                                    .then((response) => setUserId(response, tgUser.id))
                                     .catch((error) => console.error(fileUrl + " Error:", error));
 
-                                    //tokenSect.classList.remove('hidden');
-                                    //tableOps.classList.add('hidden');
-                                }
+                                //tokenSect.classList.remove('hidden');
+                                //tableOps.classList.add('hidden');
                             }
-                        });
+                        }
+                    });
 
         }
         else {
