@@ -211,7 +211,9 @@
 
     }
 
-    function onRatesRefreshClick(rateSpan) {
+    function onRatesRefreshClick() {
+
+        let rateSpan = document.getElementById('swap_rates');
 
         rateSpan.innerText = '';
 
@@ -332,7 +334,7 @@
 
 <body>
     <section id="top_sect" class="center">
-        <div><span id="swap_rates"></span><button onclick="myFunction()">🗘</button></div><br>
+        <div><span id="swap_rates"></span><button onclick="onRatesRefreshClick()">🗘</button></div><br>
         <div><span class="bigtext" id="user_name"></span></div><br>
         <div><span id="user_account"></span></div><br>
         <div>
@@ -400,7 +402,7 @@
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
-        var rateSpan = document.getElementById('swap_rates');
+        //var rateSpan = document.getElementById('swap_rates');
         var tgUser = {};
         var curTUser = {};
 
@@ -431,7 +433,7 @@
             }
         }
 
-        onRatesRefreshClick(rateSpan);
+        onRatesRefreshClick();
 
         if(Telegram.WebApp.initData) {
 
