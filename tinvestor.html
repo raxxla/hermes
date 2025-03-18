@@ -211,6 +211,15 @@
 
     }
 
+    function onRatesRefreshClick(rateSpan) {
+
+        rateSpan.innerText = '';
+
+        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += ` GLD: ${r}₽ `); sleep(500);
+        getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += ` CNY: ${r}₽ `); sleep(500);
+        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEX: ${r}₽ `); sleep(500);
+
+    }
 
     class TUser {
 
@@ -323,7 +332,7 @@
 
 <body>
     <section id="top_sect" class="center">
-        <div><span id="swap_rates"></span></div><br>
+        <div><span id="swap_rates"></span><button onclick="myFunction()">🗘</button></div><br>
         <div><span class="bigtext" id="user_name"></span></div><br>
         <div><span id="user_account"></span></div><br>
         <div>
@@ -422,9 +431,7 @@
             }
         }
 
-        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += `  GLD: ${r}₽`); sleep(500);
-        getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += `  CNY: ${r}₽`); sleep(500);
-        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += `  IMOEX: ${r}₽`); sleep(500);
+        onRatesRefreshClick(rateSpan);
 
         if(Telegram.WebApp.initData) {
 
