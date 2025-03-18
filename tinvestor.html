@@ -39,6 +39,17 @@
     var isAdmin = false;
     var isWebApp = false;
 
+    var swapRates = {};
+
+    async function getSwapRate(ticker, mul, onCallback) {
+        const rateUrl = `https://iss.moex.com/iss/engines/futures/markets/forts/securities/${ticker}.csv?&iss.meta=off&iss.only=marketdata&marketdata.columns=SECID,SWAPRATE`;
+
+        await fetch(rateUrl)
+            .then((response) => response.text())
+            .then((csvText) => onCallback && onCallback(ticker, parseRateCsv(csvText, ticker, mul)))
+            .catch((error) => console.error("Error:", error));
+    }
+
     function cleanHTML(value) {
         return value
             .replace(/&/g, '&amp;')
@@ -317,6 +328,7 @@
     <section id="top_sect" class="center">
         <div><span class="bigtext" id="user_name"></span></div><br>
         <div><span id="user_account"></span></div><br>
+        <div><span id="swap_rates"></span></div><br>
         <div>
             Депозит: <span id="depo"></span><br>
         </div>
@@ -382,6 +394,7 @@
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
         var userNameSpan = document.getElementById('user_name');
+        var rateSpan = document.getElementById('swap_rates');
         var tgUser = {};
         var curTUser = {};
 
@@ -414,6 +427,10 @@
                 Telegram.WebApp.showAlert(hash);
             }
         }
+
+        await getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += `GLDRUBF: ${r}₽`); await sleep(500);
+        await getSwapRate('CNYRUBF', 100, (t,r) => rateSpan.innerText += ` CNYRUBF: ${r}₽`); await sleep(500);
+        await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEXF: ${r}₽`); await sleep(500);
 
         if(Telegram.WebApp.initData) {
 
@@ -484,7 +501,7 @@
             //    Telegram.WebApp.showAlert('Token: ' + token);
         }
 
-        function setTokenAcconts(token, accounts, accIndex) {
+        async function setTokenAcconts(token, accounts, accIndex) {
 
             if(isWebApp) {
                 userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');// `${tgUser.first_name} ${accounts[accIndex].name}`;
@@ -494,7 +511,7 @@
                 userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
             }
 
-            sleep(1500);
+            await sleep(1500);
 
             curTUser = new TUser(token, accounts[accIndex].id);
 

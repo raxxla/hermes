@@ -111,3 +111,23 @@ function encode(acc, data, dir) {
     return result;
 }
 
+function parseRateCsv(csvText, ticker, mul) {
+
+    const tt = ticker.toUpperCase() + ';';
+    const lines = csvText.split('\n');
+
+    for(let i = 0; i < lines.length; i++) {
+
+        if(lines[i].startsWith(tt)) {
+
+            const num = lines[i].split(';')[1];
+
+            let swapRate = parseFloat(num) * mul;
+
+            return Math.round( swapRate * 100) / 100;
+        }
+    }
+
+    return 0;
+}
+
