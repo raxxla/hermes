@@ -425,8 +425,8 @@
             }
         }
 
-        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += `GLDRUBF: ${r}₽`); sleep(500);
-        getSwapRate('CNYRUBF', 100, (t,r) => rateSpan.innerText += ` CNYRUBF: ${r}₽`); sleep(500);
+        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += ` GLDRUBF: ${r}₽`); sleep(500);
+        getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += ` CNYRUBF: ${r}₽`); sleep(500);
         getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEXF: ${r}₽`); sleep(500);
 
         if(Telegram.WebApp.initData) {
