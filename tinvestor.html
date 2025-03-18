@@ -59,7 +59,7 @@
             .replace(/\n/g, '<br/>')
     }
 
-    async function sleep(msec) {
+    function sleep(msec) {
         return new Promise(resolve => setTimeout(resolve, msec));
     }
 
@@ -425,9 +425,9 @@
             }
         }
 
-        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += ` GLDRUBF: ${r}₽`); sleep(500);
-        getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += ` CNYRUBF: ${r}₽`); sleep(500);
-        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEXF: ${r}₽`); sleep(500);
+        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += `  GLD: ${r}₽`); sleep(500);
+        getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += `  CNY: ${r}₽`); sleep(500);
+        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += `  IMX: ${r}₽`); sleep(500);
 
         if(Telegram.WebApp.initData) {
 
