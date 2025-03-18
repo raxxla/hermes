@@ -400,7 +400,7 @@
 
         function setUserId(hash, uid) {
 
-            //const hash = await response.text();// response.headers.get('data-hash');
+            //const hash = await response.text();
 
             if(typeof hash == "string" && hash.length > 40) {
 
@@ -415,12 +415,9 @@
                         if (err) {
                             Telegram.WebApp.showAlert('Error: ' + err);
                         } 
-                        else {
-                            runBot(info);
-                        }
                     });
 
-                    //alert('T: ' + info);
+                    runBot(info);
                 }
             }
             else {
