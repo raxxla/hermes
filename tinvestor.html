@@ -427,7 +427,7 @@
 
         getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += `  GLD: ${r}₽`); sleep(500);
         getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += `  CNY: ${r}₽`); sleep(500);
-        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += `  IMX: ${r}₽`); sleep(500);
+        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += `  IMOEX: ${r}₽`); sleep(500);
 
         if(Telegram.WebApp.initData) {
 
@@ -560,6 +560,12 @@
                 
                 if(val.poseSell)
                     lots += `${val.poseSell.lots}`;
+
+                if(key.startsWith('GLD'))
+                    key = 'GLD';
+
+                if(key.startsWith('CNY'))
+                    key = 'CNY';
 
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
