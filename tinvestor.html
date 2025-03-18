@@ -41,13 +41,10 @@
 
     var swapRates = {};
 
-    async function getSwapRate(ticker, mul, onCallback) {
-        const rateUrl = `https://iss.moex.com/iss/engines/futures/markets/forts/securities/${ticker}.csv?&iss.meta=off&iss.only=marketdata&marketdata.columns=SECID,SWAPRATE`;
-
-        await fetch(rateUrl)
-            .then((response) => response.text())
-            .then((csvText) => onCallback && onCallback(ticker, parseRateCsv(csvText, ticker, mul)))
-            .catch((error) => console.error("Error:", error));
+    Date.prototype.addDays = function (days) {
+        const date = new Date(this.valueOf())
+        date.setDate(date.getDate() + days)
+        return date
     }
 
     function cleanHTML(value) {
@@ -516,7 +513,7 @@
         }
 
         function setUserPortfolio(user) {
-            document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} руб. (${user.portfolio.balance} руб.)`;
+            document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} ₽. (${user.portfolio.balance} ₽.)`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
@@ -531,7 +528,7 @@
                 if(info != null) {
 
                     if(info.ba == 'TMON@') {
-                        html += '<tr><td>TMON@</td><td>+'+pose.lots+' шт. ('+ getPoseAmount(pose) + ' р.)</td><td>'+getPoseProfit( pose )+' р.</td></tr>';
+                        html += '<tr><td>TMON@</td><td>+'+pose.lots+' шт. ('+ getPoseAmount(pose) + ' ₽)</td><td>'+getPoseProfit( pose )+' ₽</td></tr>';
                     }
                     else {
                         if(!poseMap[info.ba])
@@ -566,11 +563,17 @@
 
                 if(key.startsWith('CNY'))
                     key = 'CNY';
+                
+                if(key.startsWith('USD'))
+                    key = 'USD';
+                
+                if(key.startsWith('EUR'))
+                    key = 'EUR';
 
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
 
-                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + ' р.</td></tr>';
+                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + ' ₽</td></tr>';
             }
 
             document.getElementById('poses_rows').innerHTML = html;

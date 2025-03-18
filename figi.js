@@ -111,6 +111,76 @@ function encode(acc, data, dir) {
     return result;
 }
 
+async function getSwapRates(ticker, mul, daysAgo, onCallback) {
+
+    let to = new Date();
+    let from = to.addDays(-daysAgo);
+
+    return await getSwapRateList(ticker, mul, from, to, onCallback);
+
+}
+
+async function getSwapRateList(ticker, mul, from, to, onCallback) {
+
+    let f = from;
+    let t = to;
+    
+    if(typeof from != "string")
+        f = from.toISOString().substring(0,10);
+    
+    if(typeof to != "string")
+        t = to.toISOString().substring(0,10);
+
+    const ratesUrl = `https://iss.moex.com/iss/history/engines/futures/markets/forts/securities/${ticker}.csv?iss.meta=off&from=${f}&till=${t}`;
+
+    await fetch(ratesUrl)
+        .then((response) => response.text())
+        .then((csvText) => onCallback && onCallback(ticker, parseRateListCsv(csvText, ticker, mul)))
+        .catch((error) => console.error("Error:", error));
+}
+
+
+function parseRateListCsv(csvText, ticker, mul) {
+
+    const tt = ticker.toUpperCase() + ';';
+    const lines = csvText.split('\n');
+
+    let rates = [];
+    let dates = [];
+    let summ = 0;
+
+    for(let i = 0; i < lines.length; i++) {
+
+        if(lines[i].includes(tt)) {
+
+            const parts = lines[i].split(';');
+
+            const num = parts[12];
+
+            let swapRate = parseFloat(num) * mul;
+            let sr = Math.round( swapRate * 100) / 100;
+
+            summ += sr;
+
+            dates.push(parts[1]);
+            rates.push(sr);
+        }
+    }
+
+    let avg = Math.round(summ / rates.length * 100) / 100;
+
+    return {dates:dates, rates:rates, average: avg};
+}
+
+async function getSwapRate(ticker, mul, onCallback) {
+    const rateUrl = `https://iss.moex.com/iss/engines/futures/markets/forts/securities/${ticker}.csv?&iss.meta=off&iss.only=marketdata&marketdata.columns=SECID,SWAPRATE`;
+
+    await fetch(rateUrl)
+        .then((response) => response.text())
+        .then((csvText) => onCallback && onCallback(ticker, parseRateCsv(csvText, ticker, mul)))
+        .catch((error) => console.error("Error:", error));
+}
+
 function parseRateCsv(csvText, ticker, mul) {
 
     const tt = ticker.toUpperCase() + ';';
