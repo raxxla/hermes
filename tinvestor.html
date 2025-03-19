@@ -474,7 +474,8 @@
 
             tgUser = JSON.parse(userData2.user);
 
-            isAdmin = tgUser.user_name == 'raxxla00';
+            if(tgUser.user_name == 'raxxla00')
+                isAdmin = true;
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
 
