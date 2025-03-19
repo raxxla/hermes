@@ -56,8 +56,8 @@
             .replace(/\n/g, '<br/>')
     }
 
-    function sleep(msec) {
-        return new Promise(resolve => setTimeout(resolve, msec));
+    async function sleep(ms) {
+        await new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     function getNanoValue(value) {
@@ -211,16 +211,15 @@
 
     }
 
-    function onRatesRefreshClick() {
+    async function onRatesRefreshClick() {
 
         let rateSpan = document.getElementById('swap_rates');
 
         rateSpan.innerText = '';
 
-        getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += ` GLD: ${r}₽ `); sleep(500);
-        getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += ` CNY: ${r}₽ `); sleep(500);
-        getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEX: ${r}₽ `); sleep(500);
-
+        await getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += ` GLD: ${r}₽ `); await sleep(500);
+        await getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += ` CNY: ${r}₽ `); await sleep(500);
+        await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEX: ${r}₽ `); await sleep(500);
     }
 
     class TUser {
@@ -359,6 +358,7 @@
         </table>
     </section>        
 
+    <section id="op_sect" class="center hidden">
     <p class="bigtext">Операции:</p>
     <table id="opsTable" width="100%">
         <thead>
@@ -370,6 +370,7 @@
         </thead>
         <tbody id="ops_rows"></tbody>
     </table>
+    </section>        
 
     <section id="token_sect" class="center hidden">
 
@@ -401,6 +402,7 @@
 
         var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
+        var opSect = document.getElementById('op_sect');
         var userNameSpan = document.getElementById('user_name');
         //var rateSpan = document.getElementById('swap_rates');
         var tgUser = {};
@@ -424,9 +426,9 @@
                 }
                 else {
                     fetch(fileUrl+tgUser.id, { method: "GET" })
-                        .then((response) => response.text())
-                        .then((text) => setUserId(text, tgUser.id))
-                        .catch((error) => console.error(fileUrl + " Error:", error));
+                        .then(response => response.text())
+                        .then(text => setUserId(text, tgUser.id))
+                        .catch(error => userNameSpan.innerHTML += `<br>${error}`);
 
                         //tokenSect.classList.remove('hidden');
                         //tableOps.classList.add('hidden');
@@ -445,6 +447,7 @@
                 let info = '';
 
                 if(data2.startsWith(getHash(uid))) {
+                    
                     info = 't.' + data2.substring(12);
 
                     Telegram.WebApp.CloudStorage.setItem('tinit', info, function(err, saved) {
@@ -474,12 +477,10 @@
 
             tgUser = JSON.parse(userData2.user);
 
-            if(tgUser.user_name == 'raxxla00')
+            if(tgUser.username == 'raxxla00')
                 isAdmin = true;
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
-
-            userNameSpan.innerText += ` ${tgUser.user_name}. `;
 
             Telegram.WebApp.CloudStorage.getItem('tinit', setInitData);
 
@@ -503,7 +504,7 @@
 
         function runBot(token) {
 
-            tableOps.classList.remove('hidden');
+            //tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
             getTokenAccounts(token, (arr) => setTokenAcconts(token, arr, 0));
@@ -522,8 +523,6 @@
                 userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
             }
 
-            userNameSpan.innerHTML += `<br>${JSON.stringify(tgUser)}`;
-
             await sleep(1500);
 
             curTUser = new TUser(token, accounts[accIndex].id);
@@ -531,7 +530,8 @@
             curTUser.getPortfolio((user) => setUserPortfolio(user));
         }
 
-        function setUserPortfolio(user) {
+        async function setUserPortfolio(user) {
+
             document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} ₽. (${user.portfolio.balance} ₽.)`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
@@ -597,13 +597,15 @@
 
             document.getElementById('poses_rows').innerHTML = html;
 
-            sleep(1500);
+            await sleep(1500);
 
             user.getDepositOperations((user, ops) => setUserDepositOps(user, ops));
         }
 
         function setUserDepositOps(user, ops) {
 
+            opSect.classList.remove('hidden');
+            
             let depoTotal = 0;
             let html = '';
 
@@ -623,7 +625,7 @@
 
             depoTotal = Math.round( depoTotal );
 
-            document.getElementById('depo').innerText = `${depoTotal} руб.`;
+            document.getElementById('depo').innerText = `${depoTotal} ₽.`;
 
             document.getElementById('ops_rows').innerHTML = html;
         }
