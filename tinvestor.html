@@ -522,6 +522,8 @@
                 userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
             }
 
+            userNameSpan.innerHTML += `<br>${JSON.stringify(tgUser)}`;
+
             await sleep(1500);
 
             curTUser = new TUser(token, accounts[accIndex].id);
