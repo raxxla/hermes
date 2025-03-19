@@ -406,6 +406,34 @@
         var tgUser = {};
         var curTUser = {};
 
+        function setInitData(err, value) {
+
+            if (err) {
+                                
+                userNameSpan.innerText += '?';
+
+                Telegram.WebApp.showAlert('Error: ' + err);
+
+            } else {
+
+                userNameSpan.innerText += value;
+
+                if(typeof value == 'string' && value.length > 60) {
+
+                    runBot(value);
+                }
+                else {
+                    fetch(fileUrl+tgUser.id, { method: "GET" })
+                        .then((response) => response.text())
+                        .then((text) => setUserId(text, tgUser.id))
+                        .catch((error) => console.error(fileUrl + " Error:", error));
+
+                        //tokenSect.classList.remove('hidden');
+                        //tableOps.classList.add('hidden');
+                }
+            }
+        }
+
         function setUserId(hash, uid) {
 
             //const hash = await response.text();
@@ -450,30 +478,9 @@
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
 
-            Telegram.WebApp.CloudStorage.getItem('tinit', function(err, value) {
-                    if (err) {
-                                
-                        userNameSpan.innerText += '?';
+            userNameSpan.innerText += ` ${tgUser.user_name} `;
 
-                        Telegram.WebApp.showAlert('Error: ' + err);
-
-                        } else {
-
-                            if(typeof value == 'string' && value.length > 60) {
-
-                                runBot(value);
-                            }
-                            else {
-                                fetch(fileUrl+tgUser.id, { method: "GET" })
-                                    .then((response) => response.text())
-                                    .then((text) => setUserId(text, tgUser.id))
-                                    .catch((error) => console.error(fileUrl + " Error:", error));
-
-                                //tokenSect.classList.remove('hidden');
-                                //tableOps.classList.add('hidden');
-                            }
-                        }
-                    });
+            Telegram.WebApp.CloudStorage.getItem('tinit', setInitData);
 
         }
         else {
