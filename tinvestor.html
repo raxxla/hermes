@@ -479,7 +479,7 @@
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
 
-            userNameSpan.innerText += ` ${tgUser.user_name} `;
+            userNameSpan.innerText += ` ${tgUser.user_name}. `;
 
             Telegram.WebApp.CloudStorage.getItem('tinit', setInitData);
 
