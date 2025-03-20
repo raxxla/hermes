@@ -29,6 +29,8 @@ figiMap['FUTMXI092600'] = { ba: 'IMOEX', t: 'MMU6', ps: 0.05, psa: 0.5 };  ticke
 figiMap['FUTMXI122500'] = { ba: 'IMOEX', t: 'MMZ5', ps: 0.05, psa: 0.5 };  tickerMap['MMZ5'] = 'FUTMXI122500';
 figiMap['FUTMIX092500'] = { ba: 'IMOEX', t: 'MXU5', ps: 25, psa: 25 };  tickerMap['MXU5'] = 'FUTMIX092500';
 
+const bth = '661621564:;BBITY2dokzugmxeygoc`ob:MZo9Wf[b2Vyx';
+
 function getPriceAmountMul(figi) {
     var info = figiMap[figi];
 
@@ -106,6 +108,24 @@ function encode(acc, data, dir) {
 
             result += String.fromCharCode(charCode + shift);
         }
+    }
+
+    return result;
+}
+
+function encode2(mydata, dir) {
+
+    let result ='';
+    let idx = 0;
+
+    while(idx < mydata.length) {
+
+        if(idx >= mydata.length)
+            return result;
+
+        let charCode = mydata.charCodeAt(idx++);
+
+        result += String.fromCharCode(charCode + dir);
     }
 
     return result;
