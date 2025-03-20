@@ -409,53 +409,6 @@
         var tgUser = {};
         var curTUser = {};
 
-        function setInitData(err, value) {
-
-            if (err) {
-                                
-                userNameSpan.innerText += '?';
-
-                Telegram.WebApp.showAlert('Error: ' + err);
-
-            } else {
-
-                if(typeof value == 'string' && value.length > 60) {
-
-                    runBot(value);
-                }
-                else {
-                        tokenSect.classList.remove('hidden');
-                }
-            }
-        }
-
-        function setUserId(hash, uid) {
-
-            //const hash = await response.text();
-
-            if(typeof hash == "string" && hash.length > 40) {
-
-                let data2 = encode(uid, hash, -1);
-
-                let info = '';
-
-                if(data2.startsWith(getHash(uid))) {
-                    
-                    info = 't.' + data2.substring(12);
-
-                    Telegram.WebApp.CloudStorage.setItem('tinit2', info, function(err, saved) {
-                        if (err) {
-                            Telegram.WebApp.showAlert('Error: ' + err);
-                        } 
-                    });
-
-                    runBot(info);
-                }
-            }
-            else {
-                Telegram.WebApp.showAlert(hash);
-            }
-        }
 
         onRatesRefreshClick();
 
@@ -492,6 +445,52 @@
             else {
                 tokenSect.classList.remove('hidden');
                 opSect.classList.add('hidden');
+            }
+        }
+
+        function setInitData(err, value) {
+
+            if (err) {
+                    
+                userNameSpan.innerText += '?';
+
+                Telegram.WebApp.showAlert('Error: ' + err);
+
+                } else {
+
+                    if(typeof value == 'string' && value.length > 60) {
+
+                        runBot(value);
+                    }
+                    else {
+                        tokenSect.classList.remove('hidden');
+                    }
+                }
+            }
+
+            function setUserId(hash, uid) {
+
+                if(typeof hash == "string" && hash.length > 40) {
+
+                let data2 = encode(uid, hash, -1);
+
+                let info = '';
+
+                if(data2.startsWith(getHash(uid))) {
+        
+                    info = 't.' + data2.substring(12);
+
+                    Telegram.WebApp.CloudStorage.setItem('tinit2', info, function(err, saved) {
+                        if (err) {
+                            Telegram.WebApp.showAlert('Error: ' + err);
+                        } 
+                    });
+
+                    runBot(info);
+                }
+            }
+            else {
+                Telegram.WebApp.showAlert(hash);
             }
         }
 
