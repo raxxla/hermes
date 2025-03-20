@@ -135,7 +135,6 @@
         };
     }
 
-
     function setDepositOperations(opItems) {
 
         var total = 0;
@@ -181,14 +180,11 @@
 
             if(Telegram.WebApp.initData) {
 
-                Telegram.WebApp.CloudStorage.setItem('tinit', key, function(err, saved) {
+                Telegram.WebApp.CloudStorage.setItem('tinit2', key, function(err, saved) {
                 if (err) {
                     Telegram.WebApp.showAlert('Error: ' + err);
                 } 
                 else {
-                    if (saved)
-                        Telegram.WebApp.showAlert('Token saved!');
-                    
                         runBot(key);
                 }
                 });
@@ -400,7 +396,7 @@
 
     <script type="application/javascript">
 
-        var tableOps = document.getElementById('opsTable');
+        //var tableOps = document.getElementById('opsTable');
         var tokenSect = document.getElementById('token_sect');
         var opSect = document.getElementById('op_sect');
         var userNameSpan = document.getElementById('user_name');
@@ -418,20 +414,12 @@
 
             } else {
 
-                userNameSpan.innerText += value;
-
                 if(typeof value == 'string' && value.length > 60) {
 
                     runBot(value);
                 }
                 else {
-                    fetch(fileUrl+tgUser.id, { method: "GET" })
-                        .then(response => response.text())
-                        .then(text => setUserId(text, tgUser.id))
-                        .catch(error => userNameSpan.innerHTML += `<br>${error}`);
-
-                        //tokenSect.classList.remove('hidden');
-                        //tableOps.classList.add('hidden');
+                        tokenSect.classList.remove('hidden');
                 }
             }
         }
@@ -450,7 +438,7 @@
                     
                     info = 't.' + data2.substring(12);
 
-                    Telegram.WebApp.CloudStorage.setItem('tinit', info, function(err, saved) {
+                    Telegram.WebApp.CloudStorage.setItem('tinit2', info, function(err, saved) {
                         if (err) {
                             Telegram.WebApp.showAlert('Error: ' + err);
                         } 
@@ -482,7 +470,7 @@
 
             userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
 
-            Telegram.WebApp.CloudStorage.getItem('tinit', setInitData);
+            Telegram.WebApp.CloudStorage.getItem('tinit2', setInitData);
 
         }
         else {
@@ -498,13 +486,12 @@
             }
             else {
                 tokenSect.classList.remove('hidden');
-                tableOps.classList.add('hidden');
+                opSect.classList.add('hidden');
             }
         }
 
         function runBot(token) {
 
-            //tableOps.classList.remove('hidden');
             tokenSect.classList.add('hidden');
 
             getTokenAccounts(token, (arr) => setTokenAcconts(token, arr, 0));
@@ -605,7 +592,7 @@
         function setUserDepositOps(user, ops) {
 
             opSect.classList.remove('hidden');
-            
+
             let depoTotal = 0;
             let html = '';
 
