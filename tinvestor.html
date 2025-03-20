@@ -332,6 +332,31 @@
         <div><span id="swap_rates"></span><button onclick="onRatesRefreshClick()">⚡</button></div><br>
         <div><span class="bigtext" id="user_name"></span></div><br>
         <div><span id="user_account"></span></div><br>
+
+        <section id="token_sect" class="center hidden">
+
+            <p>Токен доступа для Т-Инвестиций:</p>
+            <form onsubmit="saveCloudForm(this, event);">
+                <table width="99%">
+                    <thead>
+                    <tr>
+                        <th width="90%"></th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="cloud_rows"></tbody>
+                    <tfoot>
+                    <tr>
+                        <td><input width="95%" size="30" type="text" name="key" /></td>
+                        <td>
+                            <button type="submit">Запомнить</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </form><br>
+            </section>        
+        
         <div>
             Депозит: <span id="depo"></span><br>
         </div>
@@ -366,30 +391,6 @@
         </thead>
         <tbody id="ops_rows"></tbody>
     </table>
-    </section>        
-
-    <section id="token_sect" class="center hidden">
-
-    <p>Токен доступа для Т-Инвестиций:</p>
-    <form onsubmit="saveCloudForm(this, event);">
-        <table width="99%">
-            <thead>
-            <tr>
-                <th width="90%"></th>
-                <th width="10%"></th>
-            </tr>
-            </thead>
-            <tbody id="cloud_rows"></tbody>
-            <tfoot>
-            <tr>
-                <td><input width="95%" size="30" type="text" name="key" /></td>
-                <td>
-                    <button type="submit">Запомнить</button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-    </form>
     </section>        
 
     <script type="application/javascript">
