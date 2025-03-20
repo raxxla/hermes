@@ -191,14 +191,14 @@
 
             if(Telegram.WebApp.initData) {
 
-                //Telegram.WebApp.CloudStorage.setItem('tinit2', key, function(err, saved) {
-                //if (err) {
-                //    Telegram.WebApp.showAlert('Error: ' + err);
-                //} 
-                //else {
+                Telegram.WebApp.CloudStorage.setItem('tinit2', key, function(err, saved) {
+                    if (err) {
+                        Telegram.WebApp.showAlert('Error: ' + err);
+                    } 
+                    else {
                         runBot(key);
-                //}
-                //});
+                    }
+                });
 
             }
             else {
@@ -337,7 +337,7 @@
     <section id="top_sect" class="center">
         <div><span id="swap_rates"></span><button onclick="onRatesRefreshClick()">⚡</button></div><br>
         <div><span class="bigtext" id="user_name"></span></div><br>
-        <div><span id="user_account"></span></div><br>
+        <div><span id="user_account"></span></div>
 
         <section id="token_sect" class="center hidden">
 
