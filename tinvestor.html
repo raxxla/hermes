@@ -501,7 +501,7 @@
 
         async function setUserPortfolio(user) {
 
-            document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} ₽. (${user.portfolio.balance} ₽.)`;
+            document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} ₽.`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
@@ -516,7 +516,7 @@
                 if(info != null) {
 
                     if(info.ba == 'TMON@') {
-                        html += '<tr><td>TMON@</td><td>+'+pose.lots+' шт. ('+ getPoseAmount(pose) + ' ₽)</td><td>'+getPoseProfit( pose )+' ₽</td></tr>';
+                        html += '<tr><td>TMON@</td><td>' + getPoseAmount(pose) + ' ₽</td><td>' + getPoseProfit( pose ) +' ₽</td></tr>';
                     }
                     else {
                         if(!poseMap[info.ba])
