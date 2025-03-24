@@ -220,11 +220,11 @@
 
         let rateSpan = document.getElementById('swap_rates');
 
-        rateSpan.innerText = '';
+        rateSpan.innerHTML = '';
 
-        await getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerText += ` GLD: ${r}₽ `); await sleep(500);
-        await getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerText += ` CNY: ${r}₽ `); await sleep(500);
-        await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerText += ` IMOEX: ${r}₽ `); await sleep(500);
+        await getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r}</b>₽ `); await sleep(500);
+        await getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r}</b>₽ `); await sleep(500);
+        await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` IMOEX: <b>${r}</b>₽ `); await sleep(500);
     }
 
     class TUser {
@@ -544,7 +544,7 @@
                     lots = `+${val.poseBuy.lots} `;
                 
                 if(val.poseSell)
-                    lots += `<b>${val.poseSell.lots}<b>`;
+                    lots += `<b>${val.poseSell.lots}</b>`;
 
                 if(key.startsWith('GLD'))
                     key = 'GLD';
