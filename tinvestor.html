@@ -225,6 +225,12 @@
         await getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r}</b>₽ `); await sleep(500);
         await getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r}</b>₽ `); await sleep(500);
         await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` IMOEX: <b>${r}</b>₽ `); await sleep(500);
+
+        rateSpan.innerHTML += '<br>Среднее: ';
+
+        await getSwapRates('GLDRUBF', 1, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r.average}</b>₽ `); await sleep(500);
+        await getSwapRates('CNYRUBF', 1000, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r.average}</b>₽ `); await sleep(500);
+        await getSwapRates('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` IMOEX: <b>${r.average}</b>₽ `); await sleep(500);
     }
 
     class TUser {
@@ -338,7 +344,7 @@
 
 <body>
     <section id="top_sect" class="center">
-        <div><span id="swap_rates"></span><button onclick="onRatesRefreshClick()">⚡</button></div><br>
+        <div>Сегодня: <span id="swap_rates"></span></div><br>
         <div><span class="bigtext" id="user_name"></span></div>
         <div><span id="user_account"></span></div>
 
