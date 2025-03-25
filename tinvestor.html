@@ -224,13 +224,13 @@
 
         await getSwapRate('GLDRUBF', 1, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r}</b>₽ `); await sleep(500);
         await getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r}</b>₽ `); await sleep(500);
-        await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` IMOEX: <b>${r}</b>₽ `); await sleep(500);
+        await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` MOEX: <b>${r}</b>₽ `); await sleep(500);
 
         rateSpan.innerHTML += '<br>Среднее: ';
 
-        await getSwapRates('GLDRUBF', 1, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r.average}</b>₽ `); await sleep(500);
-        await getSwapRates('CNYRUBF', 1000, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r.average}</b>₽ `); await sleep(500);
-        await getSwapRates('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` IMOEX: <b>${r.average}</b>₽ `); await sleep(500);
+        await getSwapRates('GLDRUBF', 1, 100, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r.average}</b>₽ `); await sleep(500);
+        await getSwapRates('CNYRUBF', 1000, 100, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r.average}</b>₽ `); await sleep(500);
+        await getSwapRates('IMOEXF', 10, 100, (t,r) => rateSpan.innerHTML += ` MOEX: <b>${r.average}</b>₽ `); await sleep(500);
     }
 
     class TUser {
