@@ -306,6 +306,16 @@
         }
     }
 
+    function toggleTokenSect() {
+
+        var tokenSect = document.getElementById('token_sect');
+
+        if(tokenSect.classList.contains('hidden'))
+            tokenSect.classList.remove('hidden');
+        else
+            tokenSect.classList.add('hidden');
+    }
+
     </script>
 
     <title>Т-Инвестиции</title>
@@ -347,7 +357,32 @@
         
         <div>Сегодня: <span id="swap_rates"></span></div><br>
         <div><span class="bigtext" id="user_name"></span></div>
-        <div><span id="user_account"></span></div><br>
+        <div><a href="#" onclick="toggleTokenSect();"><span id="user_account"></span></a></div><br>
+
+        <section id="token_sect" class="center hidden">
+
+            <p>Токен доступа для Т-Инвестиций:</p>
+            <form onsubmit="saveCloudForm(this, event);">
+                <table width="99%">
+                    <thead>
+                    <tr>
+                        <th width="90%"></th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="cloud_rows"></tbody>
+                    <tfoot>
+                    <tr>
+                        <td><input width="95%" size="30" type="text" name="key" /></td>
+                        <td>
+                            <button type="submit">Запомнить</button>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </form>
+        </section>
+    
         <div>Депозит: <span id="depo"></span><br></div>
         <div>Баланс: <span id="bal"></span><br></div>
 
@@ -381,35 +416,10 @@
     </table>
     </section>
     
-    <section id="token_sect" class="center">
-
-        <p>Токен доступа для Т-Инвестиций:</p>
-        <form onsubmit="saveCloudForm(this, event);">
-            <table width="99%">
-                <thead>
-                <tr>
-                    <th width="90%"></th>
-                    <th width="10%"></th>
-                </tr>
-                </thead>
-                <tbody id="cloud_rows"></tbody>
-                <tfoot>
-                <tr>
-                    <td><input width="95%" size="30" type="text" name="key" /></td>
-                    <td>
-                        <button type="submit">Запомнить</button>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </form>
-    </section>
-
-
     <script type="application/javascript">
 
         //var tableOps = document.getElementById('opsTable');
-        //var tokenSect = document.getElementById('token_sect');
+        var tokenSect = document.getElementById('token_sect');
         var opSect = document.getElementById('op_sect');
         var userNameSpan = document.getElementById('user_name');
         //var rateSpan = document.getElementById('swap_rates');
@@ -462,6 +472,8 @@
 
                 Telegram.WebApp.showAlert('Error: ' + err);
 
+                tokenSect.classList.remove('hidden');
+
             } 
             else {
 
@@ -473,6 +485,8 @@
         }
 
         function runBot(token) {
+
+            tokenSect.classList.add('hidden');
 
             getTokenAccounts(token, (arr) => setTokenAcconts(token, arr, 0));
 
