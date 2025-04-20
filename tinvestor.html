@@ -32,6 +32,7 @@
     const opsUrl = operationsUrl + '/GetOperationsByCursor';
     const futsUrl = instrumentsUrl + '/Futures';
 
+    var infoHtml = '';
     var futArray = [];
     var futIdMap = {};
     var futTickerMap = {};
@@ -321,10 +322,14 @@
                 tokenSect2.innerHTML = '';
         }
 
-        if(infoSect.classList.contains('hidden'))
-            infoSect.classList.remove('hidden')
-        else
-            infoSect.classList.add('hidden')
+        if(infoHtml == '') {
+            infoHtml = infoSect.innerHTML;
+            infoSect.innerHTML = '';
+        }
+        else {
+            infoSect.innerHTML = infoHtml;
+            infoHtml = '';
+        }
     }
 
     </script>
