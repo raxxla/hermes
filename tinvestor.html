@@ -310,6 +310,7 @@
 
         var tokenSect = document.getElementById('token_sect');
         var tokenSect2 = document.getElementById('token_sect2');
+        var infoSect = document.getElementById('info_sect');
 
         if(tokenSect2.innerHTML == '') {
                 tokenSect2.innerHTML = tokenSect.innerHTML;
@@ -319,6 +320,11 @@
                 tokenSect.innerHTML = tokenSect2.innerHTML;
                 tokenSect2.innerHTML = '';
         }
+
+        if(infoSect.classList.contains('hidden'))
+            infoSect.classList.remove('hidden')
+        else
+            infoSect.classList.add('hidden')
     }
 
     </script>
@@ -361,15 +367,17 @@
     <section id="top_sect" class="center">
         
         <div>Сегодня: <span id="swap_rates"></span></div><br>
-        <div><span class="bigtext" id="user_name"></span></div>
-        <div><a href="#" onclick="toggleTokenSect();"><span id="user_account"></span></a></div><br>
+        <div><a href="#" onclick="toggleTokenSect();"><span class="bigtext" id="user_name"></span></a></div>
+        <div><span id="user_account"></span></div><br>
 
         <section id="token_sect" class="center"></section>
-    
-        <div>Депозит: <span id="depo"></span><br></div>
-        <div>Баланс: <span id="bal"></span><br></div>
 
     </section>        
+
+    <section id="info_sect" class="center">
+
+        <div>Депозит: <span id="depo"></span><br></div>
+        <div>Баланс: <span id="bal"></span><br></div>
 
     <section id="pose_sect" class="center hidden">
         <p class="bigtext">Позиции:</p>
@@ -422,6 +430,8 @@
             </table>
         </form>
     </section>
+
+</section>
 
     <script type="application/javascript">
 
