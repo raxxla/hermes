@@ -227,7 +227,7 @@
         await getSwapRate('CNYRUBF', 1000, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r}</b>₽ `); await sleep(500);
         await getSwapRate('IMOEXF', 10, (t,r) => rateSpan.innerHTML += ` MOEX: <b>${r}</b>₽ `); await sleep(500);
 
-        rateSpan.innerHTML += '<br>Среднее: ';
+        rateSpan.innerHTML += '<br>Год: ';
 
         await getSwapRates('GLDRUBF', 1, 100, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r.average}</b>₽ `); await sleep(500);
         await getSwapRates('CNYRUBF', 1000, 100, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r.average}</b>₽ `); await sleep(500);
@@ -371,7 +371,7 @@
 <body>
     <section id="top_sect" class="center">
         
-        <div>Сегодня: <span id="swap_rates"></span></div><br>
+        <div>День: <span id="swap_rates"></span></div><br>
         <div><a href="#" onclick="toggleTokenSect();"><span class="bigtext" id="user_name"></span></a></div>
         <div><span id="user_account"></span></div><br>
 
