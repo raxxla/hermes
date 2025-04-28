@@ -558,7 +558,9 @@
                 if(info != null) {
 
                     if(info.ba == 'TMON@') {
-                        html += '<tr><td>TMON@</td><td>' + getPoseAmount(pose) + ' ₽</td><td>' + getPoseProfit( pose ) +' ₽</td></tr>';
+                        let amt0 = getPoseAmount(pose);
+                        html += '<tr><td>TMON@</td><td>' + amt0 + ' ₽</td><td>' + getPoseProfit( pose ) +' ₽</td></tr>';
+                        document.getElementById('_free').innerText = `${user.portfolio.balanceTotal - user.portfolio.balance - amt0} ₽.`;
                     }
                     else {
                         if(!poseMap[info.ba])
@@ -627,7 +629,7 @@
                 const commission = getNanoValue( op.commission );
                 const desc = op.description.replace(' денег ', ' ');
                 const date = new Date(op.date); //Date.parse(op.date);
-                const dateStr = Intl.DateTimeFormat('ru-RU').format(date).replace('2024', '24').replace('2025', '25');
+                const dateStr = Intl.DateTimeFormat('ru-RU').format(date).replace('202', '2');
 
                 depoTotal += payment;
 
