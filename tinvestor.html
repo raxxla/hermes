@@ -381,8 +381,9 @@
 
     <section id="info_sect" class="center">
 
-        <div>Депозит: <span id="depo"></span><br></div>
-        <div>Баланс: <span id="bal"></span><br></div>
+        <div>Депозит: <span id="_depo"></span><br></div>
+        <div>Баланс: <span id="_bal"></span><br></div>
+        <div>Свободно: <span id="_free"></span><br></div>
 
     <section id="pose_sect" class="center hidden">
         <p class="bigtext">Позиции:</p>
@@ -541,7 +542,8 @@
 
         async function setUserPortfolio(user) {
 
-            document.getElementById('bal').innerText = `${user.portfolio.balanceTotal} ₽.`;
+            document.getElementById('_bal').innerText = `${user.portfolio.balanceTotal} ₽.`;
+            document.getElementById('_free').innerText = `${user.portfolio.balanceTotal - user.portfolio.balance} ₽.`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
@@ -634,7 +636,7 @@
 
             depoTotal = Math.round( depoTotal );
 
-            document.getElementById('depo').innerText = `${depoTotal} ₽.`;
+            document.getElementById('_depo').innerText = `${depoTotal} ₽.`;
 
             document.getElementById('ops_rows').innerHTML = html;
         }
