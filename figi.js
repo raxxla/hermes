@@ -213,7 +213,7 @@ function parseRateCsv(csvText, ticker, mul) {
 
             let swapRate = parseFloat(num) * mul;
 
-            return Math.round( swapRate * 100) / 100;
+            return Math.round( swapRate * 10) / 10;
         }
     }
 
