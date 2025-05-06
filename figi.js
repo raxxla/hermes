@@ -54,8 +54,7 @@ function getPoseAmount(pose) {
     return Math.round(curAmount);
 }
 
-function getPoseProfit(pose)
-{
+function getPoseProfit(pose) {
     if(!pose) return 0;
 
     let mul = getPriceAmountMul(pose.figi);
@@ -187,7 +186,7 @@ function parseRateListCsv(csvText, ticker, mul) {
         }
     }
 
-    let avg = Math.round(summ / rates.length * 100) / 100;
+    let avg = Math.round(summ / rates.length * 10) / 10;
 
     return {dates:dates, rates:rates, average: avg};
 }
