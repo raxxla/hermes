@@ -542,8 +542,8 @@
 
         async function setUserPortfolio(user) {
 
-            document.getElementById('_bal').innerText = `${user.portfolio.balanceTotal} ₽.`;
-            document.getElementById('_free').innerText = `${user.portfolio.balanceTotal - user.portfolio.balance} ₽.`;
+            document.getElementById('_bal').innerText = `${user.portfolio.balanceTotal} <b>₽</b>.`;
+            document.getElementById('_free').innerText = `${user.portfolio.balanceTotal - user.portfolio.balance} <b>₽</b>.`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
@@ -559,8 +559,8 @@
 
                     if(info.ba == 'TMON@') {
                         let amt0 = getPoseAmount(pose);
-                        html += '<tr><td>TMON@</td><td>' + amt0 + ' ₽</td><td>' + getPoseProfit( pose ) +' ₽</td></tr>';
-                        document.getElementById('_free').innerText = `${user.portfolio.balanceTotal - user.portfolio.balance - amt0} ₽.`;
+                        html += '<tr><td>TMON@</td><td>' + amt0 + ' ₽</td><td>' + getPoseProfit( pose ) +'<b>₽</b></td></tr>';
+                        document.getElementById('_free').innerText = `${user.portfolio.balanceTotal - user.portfolio.balance - amt0}<b>₽</b>.`;
                     }
                     else {
                         if(!poseMap[info.ba])
@@ -605,7 +605,7 @@
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
 
-                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + ' ₽</td></tr>';
+                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + '<b>₽</b></td></tr>';
             }
 
             document.getElementById('poses_rows').innerHTML = html;
@@ -638,7 +638,7 @@
 
             depoTotal = Math.round( depoTotal );
 
-            document.getElementById('_depo').innerText = `${depoTotal} ₽.`;
+            document.getElementById('_depo').innerText = `${depoTotal}<b>₽</b>.`;
 
             document.getElementById('ops_rows').innerHTML = html;
         }
