@@ -269,16 +269,16 @@
 
         setPortfolioPositions(data, onCallback) {
             
-            var pf = {};
+            let pf = {};
             pf.poses = [];
     
-            var pidx = 0;
+            let pidx = 0;
 
             const positions = data.positions;
     
             for(var i=0; i < positions.length; i++) {
     
-                var pose = positions[i];
+                let pose = positions[i];
     
                 //if(pose.instrumentType != 'currency') {
                 if(pose.figi != 'RUB000UTSTOM') { 
@@ -548,8 +548,11 @@
 
         async function setUserPortfolio(user) {
 
+            const freeMoney = user.portfolio.balanceTotal - user.portfolio.blocked;
+            //const freeMoney = user.portfolio.balanceTotal - user.portfolio.balance;
+
             document.getElementById('_bal').innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
-            document.getElementById('_free').innerHTML = `${user.portfolio.balanceTotal - user.portfolio.balance}<b>₽</b>`;
+            document.getElementById('_free').innerHTML = `${freeMoney}<b>₽</b>`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
