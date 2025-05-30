@@ -490,7 +490,8 @@
                 runBot(myToken);
             }
             else {
-                opSect.classList.add('hidden');
+                runBot('t.JQHBfOzNbDHJtgoxjRcZ-GCsHLopVTB7hdu6vd01bkP-ny0WLKkOjMkrgVTsANqq2mRNFTrs6kxdzXRHQeDElQ');
+                //opSect.classList.add('hidden');
             }
         }
 
@@ -551,13 +552,15 @@
             const freeMoney = user.portfolio.balanceTotal - user.portfolio.blocked;
             //const freeMoney = user.portfolio.balanceTotal - user.portfolio.balance;
 
-            document.getElementById('_bal').innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
-            document.getElementById('_free').innerHTML = `${freeMoney}<b>₽</b>`;
+            let balElem = document.getElementById('_bal');
+            let freeElem = document.getElementById('_free');
+
+            balElem.innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
+            freeElem.innerHTML = `${freeMoney}<b>₽</b>`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
             let html = '';
-
             let poseMap = {};
 
             user.portfolio.poses.forEach( pose => {
@@ -569,7 +572,7 @@
                     if(info.ba == 'TMON@') {
                         let amt0 = getPoseAmount(pose);
                         html += '<tr><td>TMON@</td><td>' + amt0 + ' ₽</td><td>' + getPoseProfit( pose ) +'<b>₽</b></td></tr>';
-                        document.getElementById('_free').innerHTML = `${user.portfolio.balanceTotal - user.portfolio.balance - amt0}<b>₽</b>`;
+                        freeElem.innerHTML = `${freeMoney - amt0}<b>₽</b>`;
                     }
                     else {
                         if(!poseMap[info.ba])
