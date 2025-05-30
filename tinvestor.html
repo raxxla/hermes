@@ -280,7 +280,8 @@
     
                 var pose = positions[i];
     
-                if(pose.instrumentType != 'currency') { //.figi != 'RUB000UTSTOM') {
+                //if(pose.instrumentType != 'currency') {
+                if(pose.figi != 'RUB000UTSTOM') { 
                     pf.poses[pidx++] = { avgPrice: getNanoValue( pose.averagePositionPrice), lots: +pose.quantityLots.units, figi: pose.figi, instrumentUid: pose.instrumentUid, curPrice: getNanoValue(pose.currentPrice), varMargin: getNanoValue(pose.varMargin), profit: getNanoValue(pose.expectedYield)};
                 }
                 else {
