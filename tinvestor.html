@@ -298,7 +298,12 @@
 
         getDepositOperations(onCallback) {
 
-            const opStatusArg = { accountId: this.accountId, state: "OPERATION_STATE_EXECUTED", limit: 1000, operationTypes: depositOperationTypes, withoutCommissions: true, withoutTrades: true, withoutOvernights: true };
+            let opStatusArg = { accountId: this.accountId, state: 'OPERATION_STATE_EXECUTED', limit: 1000, operationTypes: depositOperationTypes, withoutCommissions: true, withoutTrades: true, withoutOvernights: true };
+
+            //"from": "2025-05-30T03:41:11.041Z",
+
+            if(this.accountId == '2041030517')
+                opStatusArg = { accountId: this.accountId, from: '2025-05-28T03:00:00.000Z', state: 'OPERATION_STATE_EXECUTED', limit: 1000, operationTypes: depositOperationTypes, withoutCommissions: true, withoutTrades: true, withoutOvernights: true };
 
             fetch(opsUrl, { method: "POST", headers: { "Content-Type": "application/json", "authorization": "Bearer " + this.token }, body: JSON.stringify(opStatusArg) })
                 .then((response) => response.json())
