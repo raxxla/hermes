@@ -556,7 +556,8 @@
             let balElem = document.getElementById('_bal');
             let freeElem = document.getElementById('_free');
 
-            balElem.innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
+
+            balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 945210)}<b>₽</b>`;
             freeElem.innerHTML = `${freeMoney}<b>₽</b>`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
