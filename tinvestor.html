@@ -232,6 +232,12 @@
         await getSwapRates('GLDRUBF', 1, 100, (t,r) => rateSpan.innerHTML += ` GLD: <b>${r.average}</b>₽ `); await sleep(500);
         await getSwapRates('CNYRUBF', 1000, 100, (t,r) => rateSpan.innerHTML += ` CNY: <b>${r.average}</b>₽ `); await sleep(500);
         await getSwapRates('IMOEXF', 10, 100, (t,r) => rateSpan.innerHTML += ` MOEX: <b>${r.average}</b>₽ `); await sleep(500);
+
+        rateSpan.innerHTML += '<br>';
+
+        await getSwapRate('SBERF', 100, (t,r) => rateSpan.innerHTML += ` SBERF: <b>${r}</b>₽ `); await sleep(500);
+
+        await getSwapRates('SBERF', 100, 100, (t,r) => rateSpan.innerHTML += ` ( <b>${r.average}</b>₽ ) `); await sleep(500);
     }
 
     class TUser {
@@ -557,7 +563,7 @@
             let freeElem = document.getElementById('_free');
 
 
-            balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 956530)}<b>₽</b>`;
+            balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 958420)}<b>₽</b>`;
             freeElem.innerHTML = `${freeMoney}<b>₽</b>`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
