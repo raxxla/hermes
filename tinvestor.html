@@ -395,6 +395,7 @@
 
         <div>Депозит: <span id="_depo"></span><br></div>
         <div>Баланс: <span id="_bal"></span><br></div>
+        <div>Средства: <span id="_bal2"></span><br></div>
         <div>Свободно: <span id="_free"></span><br></div>
 
     <section id="pose_sect" class="center hidden">
@@ -560,10 +561,12 @@
             //const freeMoney = user.portfolio.balanceTotal - user.portfolio.balance;
 
             let balElem = document.getElementById('_bal');
+            let bal2Elem = document.getElementById('_bal2');
             let freeElem = document.getElementById('_free');
 
 
-            balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 946292)}<b>₽</b>`;
+            balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 948992)}<b>₽</b>`;
+            bal2Elem.innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
             freeElem.innerHTML = `${freeMoney}<b>₽</b>`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
