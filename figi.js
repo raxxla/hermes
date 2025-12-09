@@ -178,9 +178,9 @@ function parseRateListCsv(csvText, ticker, mul) {
             const num = parts[12];
 
             let swapRate = parseFloat(num) * mul;
-            let sr = Math.round( swapRate * 100) / 100;
+            let sr = Math.round( swapRate * 1000) / 1000;
 
-            summ += sr;
+            summ += Math.abs( sr );
 
             dates.push(parts[1]);
             rates.push(sr);
