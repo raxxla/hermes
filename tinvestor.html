@@ -238,6 +238,12 @@
         await getSwapRate('SBERF', 100, (t,r) => rateSpan.innerHTML += ` SBERF: <b>${r}</b>₽ `); await sleep(500);
 
         await getSwapRates('SBERF', 100, 100, (t,r) => rateSpan.innerHTML += ` ( <b>${r.average}</b>₽ ) `); await sleep(500);
+
+        rateSpan.innerHTML += '<br>';
+
+        await getSwapRate('USDRUBF', 1000, (t,r) => rateSpan.innerHTML += ` USDRUBF: <b>${r}</b>₽ `); await sleep(500);
+
+        await getSwapRates('USDRUBF', 1000, 100, (t,r) => rateSpan.innerHTML += ` ( <b>${r.average}</b>₽ ) `); await sleep(500);
     }
 
     class TUser {
