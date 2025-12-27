@@ -1,10 +1,7 @@
 var figiMap = {}; var tickerMap = {};
 figiMap['TCS70A106DL2'] = { ba: 'TMON@',  t: 'TMON@', ps: 0.01, psa: 0.01 }; tickerMap['TMON@'] = 'TCS70A106DL2';
-figiMap['FUTGL1225000'] = { ba: 'GLDRUB_TOM', t: 'GLZ5', ps: 0.1, psa: 0.1 };  tickerMap['GLZ5'] = 'FUTGL1225000';
 figiMap['FUTGLDRUBF00'] = { ba: 'GLDRUB_TOM', t: 'GLDRUBF', ps: 0.1, psa: 0.1 };  tickerMap['GLDRUBF'] = 'FUTGLDRUBF00';
-figiMap['FUTGL0925000'] = { ba: 'GLDRUB_TOM', t: 'GLU5', ps: 0.1, psa: 0.1 };  tickerMap['GLU5'] = 'FUTGL0925000';
-figiMap['FUTGL0325000'] = { ba: 'GLDRUB_TOM', t: 'GLH5', ps: 0.1, psa: 0.1 };  tickerMap['GLH5'] = 'FUTGL0325000';
-figiMap['FUTGL0625000'] = { ba: 'GLDRUB_TOM', t: 'GLM5', ps: 0.1, psa: 0.1 };  tickerMap['GLM5'] = 'FUTGL0625000';
+figiMap['FUTGL0326000'] = { ba: 'GLDRUB_TOM', t: 'GLH6', ps: 0.1, psa: 0.1 };  tickerMap['GLH6'] = 'FUTGL0326000';
 figiMap['FUTCNY062500'] = { ba: 'CNY/RUB', t: 'CRM5', ps: 0.001, psa: 1 };  tickerMap['CRM5'] = 'FUTCNY062500';
 figiMap['FUTCNY032500'] = { ba: 'CNY/RUB', t: 'CRH5', ps: 0.001, psa: 1 };  tickerMap['CRH5'] = 'FUTCNY032500';
 figiMap['FUTCNY122500'] = { ba: 'CNY/RUB', t: 'CRZ5', ps: 0.001, psa: 1 };  tickerMap['CRZ5'] = 'FUTCNY122500';
