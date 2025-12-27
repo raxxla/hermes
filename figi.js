@@ -26,6 +26,7 @@ figiMap['FUTMXI092600'] = { ba: 'IMOEX', t: 'MMU6', ps: 0.05, psa: 0.5 };  ticke
 figiMap['FUTMXI122500'] = { ba: 'IMOEX', t: 'MMZ5', ps: 0.05, psa: 0.5 };  tickerMap['MMZ5'] = 'FUTMXI122500';
 figiMap['FUTMIX092500'] = { ba: 'IMOEX', t: 'MXU5', ps: 25, psa: 25 };  tickerMap['MXU5'] = 'FUTMIX092500';
 figiMap['FUTSBERF0000'] = { ba: 'SBER', t: 'SBERF', ps: 0.01, psa: 0.01 };  tickerMap['SBERF'] = 'FUTSBERF0000';
+figiMap['FUTSBRF03260'] = { ba: 'SBER', t: 'SRH6', ps: 1, psa: 1 };  tickerMap['SRH6'] = 'FUTSBRF03260';
 
 const bth = '661621564:;BBITY2dokzugmxeygoc`ob:MZo9Wf[b2Vyx';
 
