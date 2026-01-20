@@ -656,7 +656,7 @@
 
                 const payment = getNanoValue( op.payment );
                 const commission = getNanoValue( op.commission );
-                const desc = op.description.replace(' денег ', ' ');
+                const desc = op.description.replace(' денег ', ' ').replace(' по ставке 13%','').replace(' по ставке 15%','');
                 const date = new Date(op.date); //Date.parse(op.date);
                 const dateStr = Intl.DateTimeFormat('ru-RU').format(date).replace('202', '2');
 
