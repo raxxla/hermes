@@ -664,8 +664,11 @@
 
                 let txt = '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+Math.round(payment+commission)+'</td></tr>';
 
-                if(op.type == 'OPERATION_TYPE_OUT_MULTI' && op.payment.units != -130000)
-                    txt = '';
+                if(op.type == 'OPERATION_TYPE_OUT_MULTI')
+                {
+                    if(payment != -130000)
+                        txt = '';
+                }
 
                 html += txt;
             });
