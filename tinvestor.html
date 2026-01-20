@@ -667,7 +667,10 @@
                 if(op.type == 'OPERATION_TYPE_OUT_MULTI')
                 {
                     if(payment != -130000)
+                    {
                         txt = '';
+                        depoTotal -= payment;
+                    }
                 }
 
                 html += txt;
