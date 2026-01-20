@@ -661,9 +661,9 @@
 
                 const payment = getNanoValue( op.payment );
 
-                if(payment == 130052)
-                    return;
-                
+                //if(payment == 130052)
+                //    return;
+
                 const commission = getNanoValue( op.commission );
                 const desc = op.description.replace(' денег ', ' ').replace(' по ставке 13%','').replace(' по ставке 15%','');
                 const date = new Date(op.date); //Date.parse(op.date);
