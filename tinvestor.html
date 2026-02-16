@@ -669,7 +669,8 @@
                 const date = new Date(op.date); //Date.parse(op.date);
                 const dateStr = Intl.DateTimeFormat('ru-RU').format(date).replace('202', '2');
 
-                depoTotal += payment;
+                if(date.getFullYear() == 2025)
+                    depoTotal += payment;
 
                 let txt = '<tr><td>'+dateStr+'</td><td>'+desc+'</td><td>'+Math.round(payment+commission)+'</td></tr>';
 
