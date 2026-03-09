@@ -1,4 +1,5 @@
 var figiMap = {}; var tickerMap = {};
+figiMap['TCS80A101X50'] = { ba: 'TGLD@',  t: 'TGLD@', ps: 0.01, psa: 0.01 }; tickerMap['TMON@'] = 'TCS80A101X50';
 figiMap['TCS70A106DL2'] = { ba: 'TMON@',  t: 'TMON@', ps: 0.01, psa: 0.01 }; tickerMap['TMON@'] = 'TCS70A106DL2';
 figiMap['FUTGLDRUBF00'] = { ba: 'GLDRUB_TOM', t: 'GLDRUBF', ps: 0.1, psa: 0.1 };  tickerMap['GLDRUBF'] = 'FUTGLDRUBF00';
 figiMap['FUTGL0326000'] = { ba: 'GLDRUB_TOM', t: 'GLH6', ps: 0.1, psa: 0.1 };  tickerMap['GLH6'] = 'FUTGL0326000';
