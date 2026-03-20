@@ -39,6 +39,8 @@
 
     var swapRates = {};
 
+    var accNameSuffix = '';
+
     Date.prototype.addDays = function (days) {
         const date = new Date(this.valueOf())
         date.setDate(date.getDate() + days)
@@ -458,6 +460,8 @@
                 if(tparam) {
                     const mt1 = "t.JQHBfOzNbDHJtgoxjRcZ-GCsHLopVTB7hdu6vd01bkP-" + tparam;
 
+                    accNameSuffix = '!';
+
                     runBot(mt1);
                 }
                 else
@@ -504,7 +508,7 @@
 
         async function setTokenAcconts(token, accounts, accIndex) {
 
-            userNameSpan.innerText = accounts[accIndex].name;// `${accounts[accIndex].name} #${accounts[accIndex].id}`;
+            userNameSpan.innerText = `${accounts[accIndex].name} ${accNameSuffix}`;
 
             await sleep(1500);
 
