@@ -609,7 +609,9 @@
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
 
-                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>'+ (pft1 + pft2) + '<b>₽</b></td></tr>';
+                const pft = Math.max(pft1 + pft2, -3270);
+
+                html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>' + pft + '<b>₽</b></td></tr>';
             }
 
             document.getElementById('poses_rows').innerHTML = html;
