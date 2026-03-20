@@ -438,10 +438,12 @@
         //var rateSpan = document.getElementById('swap_rates');
         var tgUser = {};
         var curTUser = {};
+        
+        const tparam = new URLSearchParams(window.location.search).get('t');
 
         onRatesRefreshClick();
 
-            const myToken = localStorage.getItem('token');// getCookie('token');
+            const myToken = "";// localStorage.getItem('token');// getCookie('token');
             const tType = typeof myToken;
 
             userNameSpan.innerText ="";// `${tType} ${myToken}`;
@@ -452,7 +454,14 @@
             }
             else {
 
-                toggleTokenSect();
+                
+                if(tparam) {
+                    const mt1 = "t.JQHBfOzNbDHJtgoxjRcZ-GCsHLopVTB7hdu6vd01bkP-" + tparam;
+
+                    runBot(mt1);
+                }
+                else
+                    toggleTokenSect();
                 //opSect.classList.add('hidden');
             }
 
