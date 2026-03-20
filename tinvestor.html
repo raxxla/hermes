@@ -583,6 +583,8 @@
                 }
             });
 
+            let poseIndex = 0;
+
             for(var key in poseMap) {
 
                 let val = poseMap[key];
@@ -609,7 +611,9 @@
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
 
-                const pft = Math.max(pft1 + pft2, -3270);
+                const pft = Math.max(pft1 + pft2, -3270 + poseIndex);
+
+                poseIndex += 470;
 
                 html += '<tr><td>'+key+'</td><td>'+lots+' шт.</td><td>' + pft + '<b>₽</b></td></tr>';
             }
