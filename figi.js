@@ -29,6 +29,32 @@ figiMap['FUTMIX092500'] = { ba: 'IMOEX', t: 'MXU5', ps: 25, psa: 25 };  tickerMa
 figiMap['FUTSBERF0000'] = { ba: 'SBER', t: 'SBERF', ps: 0.01, psa: 0.01 };  tickerMap['SBERF'] = 'FUTSBERF0000';
 figiMap['FUTSBRF03260'] = { ba: 'SBER', t: 'SRH6', ps: 1, psa: 1 };  tickerMap['SRH6'] = 'FUTSBRF03260';
 
+			function getPercentDiff(a, b)
+			{
+				//| (a — b) / [(a + b) / 2] | *100 %
+
+				const avg = (a + b) / 2;
+
+				if (avg == 0)
+					return 0;
+
+				const diff = a - b;
+
+				const div = diff / avg;// System.Math.Abs(diff / avg);
+
+                const percent = div * 100;
+
+                return Math.round((percent + Number.EPSILON) * 10) / 10;
+
+				//return System.Math.Round(div * 100, digits);
+			}
+
+            function mathRound(value) {
+
+                return Math.round((value + Number.EPSILON) * 10) / 10;
+
+            }
+
 function getPriceAmountMul(figi) {
     var info = figiMap[figi];
 

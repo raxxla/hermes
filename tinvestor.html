@@ -375,6 +375,7 @@
         <div>Депозит: <span id="_depo"></span><br></div>
         <div>Баланс: <span id="_bal"></span><br></div>
         <div>Свободно: <span id="_free"></span><br></div>
+        <div>-------------------------<br><span id="_itog"></span><br></div>
 
     <section id="pose_sect" class="center hidden">
         <p class="bigtext">Позиции:</p>
@@ -445,10 +446,10 @@
 
         onRatesRefreshClick();
 
-            const myToken = "";// localStorage.getItem('token');// getCookie('token');
+            const myToken = localStorage.getItem('token');// getCookie('token');
             const tType = typeof myToken;
 
-            userNameSpan.innerText ="";// `${tType} ${myToken}`;
+            //userNameSpan.innerText ="";// `${tType} ${myToken}`;
 
             if(tType == 'string' && myToken.length > 60) {
 
@@ -525,11 +526,29 @@
             let balElem = document.getElementById('_bal');
             //let bal2Elem = document.getElementById('_bal2');
             let freeElem = document.getElementById('_free');
+            let itogElem = document.getElementById('_itog');
 
             //balElem.innerHTML = `${Math.max(user.portfolio.balanceTotal, 613110)}<b>₽</b>`;
 
-            balElem.innerHTML = `${user.portfolio.balanceTotal}<b>₽</b>`;
-            freeElem.innerHTML = `${freeMoney}<b>₽</b>`;
+            const prevBalance = 518751;
+            const prevPercentSumm = 17.8;
+
+            let weeks = 4;
+
+            const currBalance = user.portfolio.balanceTotal;
+
+            balElem.innerHTML = `${currBalance}<b>₽</b>`;
+            freeElem.innerHTML = `${freeMoney}<b>₽</b><br>`;
+
+                var weekBalanceChange = currBalance - prevBalance;
+                var balanceChangePercent = getPercentDiff(currBalance, prevBalance);
+                var totalPercent = mathRound(prevPercentSumm + balanceChangePercent);
+                var avgPercent = mathRound(totalPercent / ++weeks);
+
+                itogElem.innerHTML = `Итог недели: ${weekBalanceChange}<b>₽</b><br>В процентах: ${balanceChangePercent}%<br>В среднем: ${avgPercent}%`;
+
+                //var msg0 = $"Баланс: {currBalance} руб\nИтог недели: {weekBalanceChange} руб\nВ процентах: {balanceChangePercent}%\nВ среднем: {avgPercent}%";
+
 
             document.getElementById('pose_sect').classList.remove('hidden');
 
