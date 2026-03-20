@@ -495,7 +495,7 @@
 
         async function setTokenAcconts(token, accounts, accIndex) {
 
-            userNameSpan.innerText = `${accounts[accIndex].name} #${accounts[accIndex].id}`;
+            userNameSpan.innerText = accounts[accIndex].name;// `${accounts[accIndex].name} #${accounts[accIndex].id}`;
 
             await sleep(1500);
 
