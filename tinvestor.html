@@ -459,9 +459,12 @@
 
                 
                 if(tparam) {
-                    const mt1 = "t.JQHBfOzNbDHJtgoxjRcZ-GCsHLopVTB7hdu6vd01bkP-" + tparam;
+                    let mt1 = "t.JQHBfOzNbDHJtgoxjRcZ-GCsHLopVTB7hdu6vd01bkP-" + tparam;
 
                     accNameSuffix = '!';
+
+                    if(tparam.startsWith("t."))
+                        mt1 = tparam;
 
                     runBot(mt1);
                 }
