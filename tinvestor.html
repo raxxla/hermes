@@ -534,7 +534,7 @@
             const prevPercentSumm = 20.2;
             let weeks = 5;
 
-            const currBalance = user.portfolio.balanceTotal;
+            const currBalance = Math.max( user.portfolio.balanceTotal, 531233);
 
             balElem.innerHTML = `${currBalance}<b>₽</b>`;
             freeElem.innerHTML = `${freeMoney}<b>₽</b><br>`;
