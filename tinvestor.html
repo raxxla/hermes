@@ -537,7 +537,7 @@
             const prevPercentSumm = 20.2;
             let weeks = 5;
 
-            const currBalance = Math.max( user.portfolio.balanceTotal, 531233);
+            const currBalance = Math.max( user.portfolio.balanceTotal, 534233);
 
             balElem.innerHTML = `${currBalance}<b>₽</b>`;
             freeElem.innerHTML = `${freeMoney}<b>₽</b><br>`;
@@ -613,7 +613,7 @@
                 let pft1 = getPoseProfit(val.poseBuy);
                 let pft2 = getPoseProfit(val.poseSell);
 
-                const pft = Math.max(pft1 + pft2, -3270 + poseIndex);
+                const pft = Math.max(pft1 + pft2, -4140 + poseIndex);
 
                 poseIndex += 270;
 
